@@ -14,7 +14,7 @@ Algumas outras funcionalidades são:
 
 ## Estruturas Iniciais
 
-OBSERVAÇÃO: provável que sejam adicionadas mais no futuro.
+OBSERVAÇÃO: provável que sejam adicionadas mais no futuro, ou retiradas.
 
 ## Airport
 ---
@@ -31,7 +31,7 @@ Fields:
 | wether_condition      | WetherCondition               | condição do tempo no momento                              |
 | location              | Location                      | localização geografica do aeroporto                       |
 | planes                | Lista ligada de _Planes_      | aeronaves localizadas nesse aeroporto no exato momento    |
-
+| connections           | lista ligada de _Airport_     | outros aeroportos que se pode ir a partir do atual        |
 <br/>
 
 ## WetherCondition
@@ -41,10 +41,10 @@ Struct para representar a condição do tempo.
 
 Fields: 
 
-| nome                  | tipo      | descrição         |
-| -------------         | ----------| ---               |
-| condition             | string    | condição do tempo |
-| lastTimeChecked       | string    |                   |
+| nome                  | tipo      | descrição                     |
+| -------------         | ----------| ---                           |
+| condition             | string    | condição do tempo             |
+| lastTimeChecked       | timestamp | ultima vez que foi checado as condicoes de tempo |
 
 NOTE:  
 
@@ -68,37 +68,29 @@ Fields:
 <br/>
 Lista ligada para representar conjunto do tipo aeroporto
 
+_obs: na verdade acabaria sendo uma lista adjacente já que cada aeroporto tem uma lista de outros aeroportos com que ele se conecta._
+
+_Através dessa lista adjacente será possível desenvolver as funcionalidades que envolvem operações de busca em grafos_
+
 Fields:
 
 - Lista ligada que armazena o tipo _Airport_
-
-
-<br/>
-
-## Connection
----
-<br/>
-Struct para representar a conexão entre dois aeroportos.
-
-Fields:
-
-| nome                  | tipo                          | descrição                             |
-| -------------         | -----------                   | ---                                   |
-| city                  | string                        | cidade em que se localiza o aeroporto |
-| country               | string                        | país em que se localiza o aeroporto   |
-
 
 <br/>
 
 ## Plane
 ---
+ 
 <br/>
 Fields:
 
-| Responsável           | Descrição                     |  Data             |
-| -------------         | -----------                   | ---               |
-| Vinicius M Miranda    | Primeira versão do documento  | 04/03/2021        |
-
+| nome                  | tipo                          | descrição                         |
+| -------------         | -----------                   | ---                               |
+|   model               | enum _Models_                 | modelo da aeronave                |
+|   airlineCompany      | _AirlineCompany_              | companhia aerea dona da aeronave  |
+| brand                 | enum _PlaneBrand              | marca da aeronave                 |
+|   capacity            | int                           | numero maximo de passageiros      |
+| current_route         | _Route_                       |  rota de navegacao atual          |
 
 <br/>
 
@@ -106,17 +98,35 @@ Fields:
 ---
 Fields: 
 
-| Responsável           | Descrição                     |  Data             |
-| -------------         | -----------                   | ---               |
-| Vinicius M Miranda    | Primeira versão do documento  | 04/03/2021        |
+| nome                  | tipo                          | descrição              |
+| -------------         | -----------                   | ---                    |
+|   id                  |long int                       |identificador           |
+|   name                | string                        | nome da companhia aerea|
+| planes                | lista de _Planes_             | aeronaves que possui   |
+| country               | string                        | pais da companhia      |
+
 
 <br/>
 
+## Passenger
+---
+| nome                  | tipo                          | descrição              |
+| -------------         | -----------                   | ---                    |
+|   id                  |long int                       |identificador           |
+|   name                | string                        | nome da companhia aerea|
+|   plane               | _Plane_                       | aeronave               |
+
+
+
+
+
+
 ## Histórico de versões do documento
 
-| Responsável           | Descrição                     |  Data             |
-| -------------         | -----------                   | ---               |
-| Vinicius M Miranda    | Primeira versão do documento  | 04/03/2021        |
+| Responsável           | Descrição                                     |  Data             |
+| -------------         | -----------                                   | ---               |
+| Vinicius M Miranda    | Primeira versão do documento                  | 04/03/2021        |
+| Vinicius M Miranda    | adicionando fields e structs que faltaram | 19/03/2021        |
 
 
 
