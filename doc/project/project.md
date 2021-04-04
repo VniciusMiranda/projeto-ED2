@@ -116,10 +116,8 @@ Fields:
 |   name                | string                        | nome da companhia aerea|
 |   plane               | _Plane_                       | aeronave               |
 
-
-
-
-
+<br/>
+<br/>
 
 ## Histórico de versões do documento
 
