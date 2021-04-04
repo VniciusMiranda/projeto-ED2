@@ -1,5 +1,5 @@
+/* created by: Vinicius Miranda  25/03/2021 */
 #include <utils.h>
-#include <stdio.h>
 
 
 bool equals(const char* str1, const char *str2) {
