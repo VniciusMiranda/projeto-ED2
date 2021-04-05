@@ -8,7 +8,7 @@ O sistema de linhas aéreas é um dos mais complexos hoje no mundo e de fundamen
 
 Este projeto objetiva oferecer a um usuário administrador de linhas aéreas uma forma de organizar e gerenciar dados sobre as operações de voos em aeroportos, podendo ser considerados alguns fatores como clima, rotas e posição.
 
-### Descrição do Projeto
+### Descrição do projeto
 
 A estrutura e organização do projeto será a seguinte:
 
@@ -23,7 +23,7 @@ A estrutura e organização do projeto será a seguinte:
 
 OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e poderá ou não ser implementado.
 
-#### Funcionalidades principais para o Usuário
+#### Principais funcionalidades para o usuário
 
 * Cadastrar Dados;
 * Excluir Dados;
@@ -35,7 +35,7 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
 
 O Airline Management System utilizará a linguagem de programação C e a biblioteca visual ncurses.
 
-### Como Compilar e Rodar
+### Como compilar e rodar
 
 Dentro do  diretório *project* siga as seguintes instruções:
 
