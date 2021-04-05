@@ -1,10 +1,10 @@
 # Airline Management System 
 
-## Introdução
+### Introdução
 
 O sistema de linhas aéreas é um dos mais complexos hoje no mundo e de fundamental importância para a economia mundial. Como consequência dessa complexidade, surgem problemáticas de forma exponencial e para acompanhar esse crescimento diversas soluções de software foram criadas. Tendo isso em vista, para esse projeto foi decidido apresentar uma solução simplista para algumas das problemáticas relacionadas a esse área.
 
-## Visão geral
+### Visão geral
 
 Este projeto objetiva oferecer a um usuário administrador de linhas aéreas uma forma de organizar e gerenciar dados sobre as operações de voos em aeroportos, podendo ser considerados alguns fatores como clima, rotas e posição.
 
@@ -32,10 +32,12 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
    - Dentro da opção visualizar o usuário poderá ordernar como desejar os dados mostrados.
 
 ### Depêndencias
+
 O Airline Management System utilizará a linguagem de programação C e a biblioteca visual ncurses.
 
 ### Como Compilar e Rodar
-Dentro do  diretório *project*, siga as seguintes instruções.
+
+Dentro do  diretório *project* siga as seguintes instruções:
 
 Crie os diretórios "executable" e "obj":
 
@@ -48,7 +50,7 @@ Compile o código usando make:
 make
 ```
 
-agora apenas rode o executavel e seja feliz :)
+Agora rode o executável:
 ```
 ./executable/project-organizer
 ```
