@@ -57,7 +57,7 @@ Agora rode o executável:
 
 ### Autores
 
-* Victor Eduardo Iscava Moreira;
-* Vinicius Medeiros Miranda;
+* Victor Eduardo Iscava Moreira
+* Vinicius Medeiros Miranda
 
 Alunos de Engenharia de Computação, da Universidade Federal de Goiás.
