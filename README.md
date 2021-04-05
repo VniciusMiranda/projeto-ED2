@@ -2,9 +2,7 @@
 
 ## Introdução
 
-O sistema de linhas aéreas é um dos mais complexos hoje no mundo e de fundamental importância para a economia mundial.
-Como consequência dessa complexidade, surgem problemáticas de forma exponencial e para acompanhar esse crescimento diversas soluções de software foram criadas.
-Tendo isso em vista, para esse projeto foi decidido apresentar uma solução para algumas das problemáticas relacionadas a esse área.
+O sistema de linhas aéreas é um dos mais complexos hoje no mundo e de fundamental importância para a economia mundial. Como consequência dessa complexidade, surgem problemáticas de forma exponencial e para acompanhar esse crescimento diversas soluções de software foram criadas. Tendo isso em vista, para esse projeto foi decidido apresentar uma solução simplista para algumas das problemáticas relacionadas a esse área.
 
 ## Visão geral
 
@@ -29,7 +27,7 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
 
 * Cadastrar Dados;
 * Excluir Dados;
-  - O usuário poderá inserir e remover dados sobre avião, aeroporto e outras estrututuras.
+  - O usuário poderá inserir e remover dados sobre avião, aeroporto e outras objetos.
 * Visualizar;
    - Dentro da opção visualizar o usuário poderá ordernar como desejar os dados mostrados.
 
@@ -37,26 +35,23 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
 O Airline Management System utilizará a linguagem de programação C e a biblioteca visual ncurses.
 
 ### Como Compilar e Rodar
-
-Dentro do  diretório project, siga as seguintes instruções:
+Dentro do  diretório *project*, siga as seguintes instruções.
 
 Crie os diretórios "executable" e "obj":
 
-
+```
 mkdir executable/ obj/
-
+```
 
 Compile o código usando make:
-
-
+```
 make
+```
 
-
-rode o executavel:
-
-
+agora apenas rode o executavel e seja feliz :)
+```
 ./executable/project-organizer
-
+```
 
 ### Autores
 
