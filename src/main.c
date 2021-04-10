@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ncurses.h> 
 #include <utils.h>
+#include <Database.h>
 
 // TODO: once the hashmap is implemented, refactor the options handling to use a hashmap 
 char* options[] = {"run-ui", "run-cl"};
@@ -14,6 +15,14 @@ void runUi();
 void runCl(); 
 
 int main(int numb_args, char* args[]) {
+    char cwd[PATH_MAX];
+    char home[PATH_MAX];
+
+    create_db("name", "/some/path/random/whatever");
+    getcwd(cwd, sizeof(cwd));
+    printf("current working directory: %s\n",cwd);
+    printf("home directory path: %s\n", getenv("HOME"));
+
  
     if(handle_options(numb_args, args) == ERR) {
         fprintf(stderr, "invalid argument.\nexiting...\n");

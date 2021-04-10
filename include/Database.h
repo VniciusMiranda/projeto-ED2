@@ -1,20 +1,38 @@
-/* created by ViniciusMiranda 21/03/2021 */
 #ifndef __DATABASE_H_
-#define __DATABASE_H_ 1
+#define __DATABASE_H_
 
 #include <stdio.h>
-/* created by: Vinicius Miranda - 25/03/2021 */
 #include <stdlib.h> 
-#include <Table.h>
+
+#include <utils.h>
+
+#define DATABASE_CONF_DIR   ".DB_ED2_CONF/"
+#define DATABASE_DIR        ".DB_ED2/"
+#define STORAGE_DIR         "STORAGE/"
+
+#define INFO_FILE           "info.dat" 
+#define METADATA_FILE       "metadata.dat"
+
+#define TABLE_MAX 100
+
 
 typedef struct database {
     char* name;
+    char* tables[TABLE_MAX];
     time_t created;
 } Database_t;
 
+// creates database. Default path to storage /home/@user/.DB_ED2/@dbname/STORAGE
+Database_t* create_db(char* name, char* path);
 
-Database_t* create();
+// dealocates all the information related with this database
+// from the current execution
+int destroy_db(Database_t* db);
 
-int destroy(Database_t* db);
+// deletes al the data current stored on the database
+int purge_db(Database_t* db_name);
+
+// loads data from @db_name on the program
+Database_t* load_db(char* db_name);
 
 #endif
