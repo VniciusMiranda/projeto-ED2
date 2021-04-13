@@ -15,8 +15,6 @@
 
 #include <ncurses.h>
 
-
-// macros
 #define getName(var, str) sprintf(str, "%s", #var) 
 
 bool equals(const char* str1, const char *str2);
