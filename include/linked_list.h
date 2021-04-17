@@ -14,28 +14,33 @@ typedef struct element {
 typedef struct link_list {
     int length;
     element_t* head;
+    element_t* tail;
 } linked_list_t;
 
 
-linked_list_t* create();
+linked_list_t* create_list();
 
-int destroy(linked_list_t* l);
+int destroy_list(linked_list_t* l);
 
-int insert(linked_list_t* l, void* d);
+int insert_element(linked_list_t* l, void* d);
 
-int insertAt(linked_list_t* l, int index);
+int insert_element_at(linked_list_t* l, unsigned int index, void* d);
 
-int getFrom(linked_list_t* l, int index);
+void* get_element_from(linked_list_t* l, int index);
 
-int remove(linked_list_t* l, bool(*find_func)(void*));
+int remove_element(linked_list_t* l, bool(*find_func)(void*));
 
-void* find(linked_list_t* l, bool(*find_func)(void*));
+int remove_element_from(linked_list_t* l,unsigned int index);
 
-void** findAll(linked_list_t* l, bool(*find_func)(void*));
+void* find_element(linked_list_t* l, bool(*find_func)(void*));
 
-int indexOf(linked_list_t* l, bool(*find_func)(void*));
+int find_all_elements(linked_list_t* l, bool(*find_func)(void*), void* result[], int* numb_results);
 
-bool contains(linked_list_t* l, bool(*find_func)(void*));
+int index_of_element(linked_list_t* l, bool(*find_func)(void*));
+
+bool contains_element(linked_list_t* l, bool(*find_func)(void*));
+
+int print_list(linked_list_t* l, void(*print_func)(void*), FILE* f);
 
 #endif
 

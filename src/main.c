@@ -15,22 +15,23 @@ void runUi();
 void runCl(); 
 
 int main(int numb_args, char* args[]) {
-    char cwd[PATH_MAX];
-    char home[PATH_MAX];
 
-    create_db("name", "/some/path/random/whatever");
-    getcwd(cwd, sizeof(cwd));
-    printf("current working directory: %s\n",cwd);
-    printf("home directory path: %s\n", getenv("HOME"));
 
- 
+    // linked_list_t* l = create_list();
+    
+    // insert_element(l, (void*) &p);
+
+    // print_list(l, print_passenger, NULL);
+
     if(handle_options(numb_args, args) == ERR) {
-        fprintf(stderr, "invalid argument.\nexiting...\n");
+        p_log(stderr, "invalid arguments...", LOG_ERROR);
+        p_log(stderr, "exiting.", LOG_ERROR);
+        
         print_options(stderr);
         exit(EXIT_FAILURE);
     }
 
-    printf("exiting application... bye\n");
+    p_log(stdout,"exit success.", LOG_INFO);
     exit(EXIT_SUCCESS);
 }
 
@@ -49,13 +50,11 @@ int handle_options(int numb_opts, char* opts[]) {
 }
 
 void runUi() {
-    printf("The user interface is not implemented yet :c\n");
-    exit(EXIT_FAILURE);
+    p_log(stdout, "The user interface is not implemented yet :c", LOG_WARNING);
 }
 
 void runCl() {
-    printf("the command line is not implemented yet :c\n");
-    exit(EXIT_FAILURE);
+    p_log(stdout, "The user interface is not implemented yet :c", LOG_WARNING);
 }
 
 
