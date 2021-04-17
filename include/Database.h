@@ -6,12 +6,10 @@
 
 #include <utils.h>
 
-#define DATABASE_CONF_DIR   ".DB_ED2_CONF/"
+
 #define DATABASE_DIR        ".DB_ED2/"
 #define STORAGE_DIR         "STORAGE/"
-
 #define INFO_FILE           "info.dat" 
-#define METADATA_FILE       "metadata.dat"
 
 #define TABLE_MAX 100
 
@@ -35,4 +33,7 @@ int purge_db(Database_t* db_name);
 // loads data from @db_name on the program
 Database_t* load_db(char* db_name);
 
+bool db_exists(char* name);
+
+int get_path_db(char* dest, char* db_name);
 #endif
