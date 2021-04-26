@@ -42,7 +42,7 @@ int insert_element(linked_list_t* l, void* d) {
         new_element->next = NULL;
         l->head = new_element;
         l->tail = new_element;
-
+        l->length++;
         return OK;
     }
 
@@ -66,8 +66,6 @@ int insert_element_at(linked_list_t* l, unsigned int index, void* d) {
     element_t* new_element = (element_t*) malloc(sizeof(element_t)); 
     if(!new_element) return ERR;
 
-    new_element->data = d;
-
     if(l->length/2 < index) {
         temp = l->head;
         for(int i = 0; i < index && temp; i++) temp = temp->next;
@@ -77,10 +75,18 @@ int insert_element_at(linked_list_t* l, unsigned int index, void* d) {
         for(int i = l->length; i > index && temp; i--) temp = temp->prev;
     }
 
+    new_element->data = d;
     new_element->next = temp;
-    temp->prev->next = new_element; 
-    new_element->prev = temp->prev;
+
+    if(temp->prev)
+        temp->prev->next = new_element;
+
     temp->prev = new_element;
+
+    if(temp == l->head)
+        l->head = new_element;
+    
+    new_element->prev = temp->prev;
 
     return OK;
 }
@@ -101,12 +107,12 @@ void* get_element_from(linked_list_t* l, int index) {
     return temp->data;
 }
 
-int remove_element(linked_list_t* l, bool(*find_func)(void*)) {
+int remove_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) {
     if(!l) return ERR;
 
     element_t* e = l->head, *tmp;
     while(e) {
-        if(find_func(e->data)) {
+        if(find_func(e->data, cmp)) {
             tmp = e;
             if(tmp == l->head)
                 l->head = l->head->next;
@@ -160,13 +166,13 @@ int remove_element_from(linked_list_t* l, unsigned int index) {
     return OK;
 }
 
-void* find_element(linked_list_t* l, bool(*find_func)(void*)) {
+void* find_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) {
     if(!l) return NULL;
 
     element_t* tmp;
         tmp = l->head;
         for(int i = 0;tmp; i++) {
-            if(find_func(tmp->data))
+            if(find_func(tmp->data, cmp))
                 return tmp->data;
             tmp = tmp->next;
         }
@@ -174,15 +180,14 @@ void* find_element(linked_list_t* l, bool(*find_func)(void*)) {
     return NULL;
 }
 
-
-int find_all_elements(linked_list_t* l, bool(*find_func)(void*), void* result[], int* numb_results) {
+int find_all_elements(linked_list_t* l, bool(*find_func)(void*, void*), void* result[], int* numb_results, void* cmp) {
     if(!l ||  !result) return ERR;
 
     int result_size = 0;
 
     element_t* tmp = l->head;
     for(int i = 0; tmp ;i++) {
-        if(find_func(tmp->data))
+        if(find_func(tmp->data, cmp))
             result[result_size++] = tmp->data;
     }
     *numb_results = result_size;
@@ -190,13 +195,13 @@ int find_all_elements(linked_list_t* l, bool(*find_func)(void*), void* result[],
     return OK;
 }
 
-int index_of_element(linked_list_t* l, bool(*find_func)(void*)) {
+int index_of_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) {
     if(!l) return ERR;
 
     element_t* tmp = l->head;
     int i = 0;
     while(tmp) {
-        if(find_func(tmp->data))
+        if(find_func(tmp->data, cmp))
             return i;
         tmp = tmp->next;
         i++;
@@ -206,12 +211,12 @@ int index_of_element(linked_list_t* l, bool(*find_func)(void*)) {
     return ERR;
 }
 
-bool contains_element(linked_list_t* l, bool(*find_func)(void*)) {
+bool contains_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) {
     if(!l) return false;
 
     element_t* tmp = l->head;
     while(tmp) {
-        if(find_func(tmp->data))
+        if(find_func(tmp->data, cmp))
             return true;
         tmp = tmp->next;
     }
@@ -219,14 +224,14 @@ bool contains_element(linked_list_t* l, bool(*find_func)(void*)) {
     return false;
 }
 
-int print_list(linked_list_t* l, void(*print_func)(void*), FILE* f) {
+int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*)) {
     if(!l) return ERR;
     if(!f) f = stdout;
+   
 
-    fprintf(f, "list:");
     element_t* e = l->head;
     while(e) {
-        print_func(e->data);
+        print_func(f, e->data);
         e = e->next;
     }
 }
