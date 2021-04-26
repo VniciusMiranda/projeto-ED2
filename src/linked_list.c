@@ -1,10 +1,6 @@
 #include <linked_list.h>
 
-/*
-    creates a generic link list.
-    params: none
-    return: linked_list_t*
-*/
+
 linked_list_t* create_list() {
     linked_list_t* l = (linked_list_t*) malloc(sizeof(linked_list_t)); 
     if(!l) return NULL;
@@ -91,7 +87,7 @@ int insert_element_at(linked_list_t* l, unsigned int index, void* d) {
     return OK;
 }
 
-void* get_element_from(linked_list_t* l, int index) {
+void* get_element_from(linked_list_t* l,unsigned int index) {
     if(!l || index >= l->length) return NULL;
 
     element_t* temp;
