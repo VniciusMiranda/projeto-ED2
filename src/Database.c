@@ -1,4 +1,4 @@
-#include <Database.h>
+#include "Database.h"
 
 /*
     creates a new database.
@@ -28,15 +28,14 @@ Database_t* create_db(char* name, char* path) {
     sprintf(log, "allocating memory for database %s", db_name);
     p_log(stdout, log, LOG_INFO); 
     Database_t* db = (Database_t*) malloc(sizeof(Database_t)); 
-    if(!db) return ERR;
+    if(!db) return NULL;
 
     db->created = time(NULL);
     strcpy(db->name, db_name);
     for(int i = 0; i < TABLE_MAX; i++)
         db->tables[i] = NULL;
 
-
-    write_initial_info_db(db);  
+    // write_initial_info_db(db);  
     
     return db;
 }
@@ -45,7 +44,7 @@ int _build_dir_db(char* db_name) {
     char log[LOG_MAX]; 
     char dir_path[PATH_MAX], info_path[PATH_MAX];
     get_path_db(dir_path, db_name);
-    get_info_file_path(info_path, db_name);
+    // get_info_file_path(info_path, db_name);
     // TODO: find cleaner way to print formated str on logs
     sprintf(log, "dir path: %s", dir_path);
     p_log(stdout, log, LOG_INFO);
@@ -64,7 +63,7 @@ int _build_dir_db(char* db_name) {
 bool db_exists(char* name) {
     if(!name) return false;
     char path[PATH_MAX];
-    getPath_db(path, name);
+    get_path_db(path, name);
     return dir_exists(path);
 }
 
@@ -93,7 +92,7 @@ int get_root_dir_db(char* dest) {
 int get_path_db(char* dest, char* db_name) {
     if(!dest || !db_name) return ERR;
 
-    get_dir_db(dest);
+    // get_dir_db(dest);
     strcat(dest, db_name);
 
     return OK;
