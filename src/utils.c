@@ -18,14 +18,14 @@ int p_log(FILE* f, char* str, int status) {
         fprintf(f, "ERROR(%s): %s", timestamp, str);
         fprintf(f,"\033[0m"); 
         break;
-     case LOG_WARNING:
-        fprintf(f,"\033[0;33m"); //Set the text to the color yellow.
-        fprintf(f, "WARN(%s): %s", timestamp, str);
-        fprintf(f,"\033[0m"); 
-        break;
      case LOG_INFO:
         fprintf(f,"\033[0;32m"); //Set the text to the color blue.
         fprintf(f, "INFO(%s): %s", timestamp, str);
+        fprintf(f,"\033[0m"); 
+        break;
+     case LOG_WARNING:
+        fprintf(f,"\033[0;33m"); //Set the text to the color yellow.
+        fprintf(f, "WARN(%s): %s", timestamp, str);
         fprintf(f,"\033[0m"); 
         break;
     default:
@@ -128,11 +128,12 @@ int replace_str(char* str, char* sub_str, char* rp_str) {
     return OK;
 }
 
-void print_line(int size, char c) {
+void print_line(FILE* f, int size, char c) {
     if(!size) size = 60;
     if(!c) c = '-';
+    if(!f) f = stdout;
 
     for(int i = 0; i < size; i++)
-        printf("%c", c);
-    printf("\n");
+        fprintf(f, "%c", c);
+    fprintf(f, "\n");
 }

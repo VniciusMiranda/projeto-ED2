@@ -42,7 +42,7 @@ int substr_index(char* str, char* sub_str);
 
 int replace_str(char* str, char* sub_str, char* rp_str);
 
-void print_line(int size, char c);
+void print_line(FILE* f, int size, char c);
 
 int p_log(FILE* f, char* str, int status);
 #endif
