@@ -12,19 +12,20 @@
 #include <dirent.h>
 #include <time.h>
 
-
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include <ncurses.h>
 
-#define LOG_MAX 10000
-#define LOG_ERROR   0
-#define LOG_INFO    1
-#define LOG_WARNING 2
+#include "type.h"
 
+#define TEXT_MAX 256
 
+/* get the name of a variable */
 #define getName(var, str) sprintf(str, "%s", #var) 
+
+#define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+
 
 bool equals(const char* str1, const char *str2);
 
@@ -44,5 +45,6 @@ int replace_str(char* str, char* sub_str, char* rp_str);
 
 void print_line(FILE* f, int size, char c);
 
-int p_log(FILE* f, char* str, int status);
+int get_curr_asc_time(char* dest);
+
 #endif

@@ -7,35 +7,6 @@ bool equals(const char* str1, const char *str2) {
     return !strcmp(str1, str2);
 }
 
-int p_log(FILE* f, char* str, int status) {
-    time_t ltime; /* calendar time */
-    ltime=time(NULL); /* get current cal time */
-    char* timestamp = asctime(localtime(&ltime));
-    timestamp[strlen(timestamp) - 1] = '\0';
-    switch (status) {
-    case LOG_ERROR:
-        fprintf(f,"\033[0;31m"); //Set the text to the color red.
-        fprintf(f, "ERROR(%s): %s", timestamp, str);
-        fprintf(f,"\033[0m"); 
-        break;
-     case LOG_INFO:
-        fprintf(f,"\033[0;32m"); //Set the text to the color blue.
-        fprintf(f, "INFO(%s): %s", timestamp, str);
-        fprintf(f,"\033[0m"); 
-        break;
-     case LOG_WARNING:
-        fprintf(f,"\033[0;33m"); //Set the text to the color yellow.
-        fprintf(f, "WARN(%s): %s", timestamp, str);
-        fprintf(f,"\033[0m"); 
-        break;
-    default:
-        break;
-    }
-    fprintf(f, "\n");
-
-    return OK;
-};
-
 // verify if a string array contains certain value
 bool str_array_contains(const char* str,char* str_array[], int array_size) {
     for(int i = 0; i < array_size; i++) {
@@ -136,4 +107,16 @@ void print_line(FILE* f, int size, char c) {
     for(int i = 0; i < size; i++)
         fprintf(f, "%c", c);
     fprintf(f, "\n");
+}
+
+int get_curr_asc_time(char* dest) {
+    if(!dest) return ERR;
+
+    time_t ltime; /* calendar time */
+    ltime = time(NULL); /* get current cal time */
+    char* timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = '\0';
+    strcpy(dest, timestamp);
+
+    return OK;
 }
