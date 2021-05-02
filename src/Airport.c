@@ -1,5 +1,7 @@
 #include "Airport.h"
 
+int write_ap(Airport_t* ap);
+
 bool find_airport_by_name(void* d, void* cmp) {
     Airport_t* ap = (Airport_t*) d, *cmp_ap = (Airport_t*) cmp;
     return equals(ap->name, cmp_ap->name); 

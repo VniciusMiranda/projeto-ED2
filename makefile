@@ -13,10 +13,10 @@ EXECUTABLE := executable/airline-management
 # libraries
 LIBS := -lncurses -lpthread 
 
-_DEPS := utils.h Table.h Database.h linked_list.h Airport.h Location.h WeatherCondition.h 
+_DEPS := type.h utils.h log.h linked_list.h Airport.h Location.h WeatherCondition.h Database.h hash_map.h
 DEPS  := $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ := main.o utils.o Database.o Table.o linked_list.o Airport.o Location.o WeatherCondition.o 
+_OBJ := main.o utils.o log.o linked_list.o Airport.o Location.o WeatherCondition.o Database.o hash_map.o 
 OBJ  := $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

@@ -1,44 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h> 
-#include <utils.h>
-#include <Database.h>
 
-// TODO: once the hashmap is implemented, refactor the options handling to use a hashmap 
+#include "utils.h"
+#include "log.h"
+
+#include "linked_list.h"
+#include "hash_map.h"
+#include "Airport.h"
+
+#include "Database.h"
+
 char* options[] = {"run-ui", "run-cl"};
-int NUMB_OPTIONS = sizeof(options)/sizeof(char*);
+int NUMB_OPTIONS = ARRAY_SIZE(options);
 
 int handle_options(int numb_opts, char* opts[]);
-void print_options(FILE* out_f); 
+void print_options(); 
 
 void runUi(); 
 void runCl(); 
 
+int init();
+
 int main(int numb_args, char* args[]) {
+    strcpy(log_file_name, "");
+    init();
 
 
-    // linked_list_t* l = create_list();
-    
-    // insert_element(l, (void*) &p);
-
-    // print_list(l, print_passenger, NULL);
-
-    if(handle_options(numb_args, args) == ERR) {
-        p_log(stderr, "invalid arguments...", LOG_ERROR);
-        p_log(stderr, "exiting.", LOG_ERROR);
+    if(init() == ERR) {
+        log_error("couldn't init application");
+        exit(EXIT_FAILURE);
+    }
         
-        print_options(stderr);
+    if(handle_options(numb_args, args) == ERR) {
+        log_error( "invalid arguments...");
+        log_error("exiting.");
+        
+        print_options();
         exit(EXIT_FAILURE);
     }
 
-    p_log(stdout,"exit success.", LOG_INFO);
+    log_error("exit success.");
     exit(EXIT_SUCCESS);
 }
 
 
-void print_options(FILE* out_f) {
-    fprintf(out_f, "valid options:\n");
-    for (int i = 0; i < NUMB_OPTIONS; i++) fprintf(out_f, "\t%s\n", options[i]);
+void print_options() {
+    fprintf(log_file, "tente novamente passando uma das opcoes listadas:\n");
+    for (int i = 0; i < NUMB_OPTIONS; i++) fprintf(log_file, "\t%s\n", options[i]);
 }
 
 int handle_options(int numb_opts, char* opts[]) {
@@ -50,11 +59,16 @@ int handle_options(int numb_opts, char* opts[]) {
 }
 
 void runUi() {
-    p_log(stdout, "The user interface is not implemented yet :c", LOG_WARNING);
+    log_warning("A interface grafica nao foi implementada ainda");
 }
 
 void runCl() {
-    p_log(stdout, "The user interface is not implemented yet :c", LOG_WARNING);
+    log_warning("A interface de linha de comando nao foi implementada ainda");
+}
+
+int init() {
+    init_log();
+    init_db();
 }
 
 
