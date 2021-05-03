@@ -8,7 +8,7 @@ typedef enum condition {
     CALM,
     WINDY,
     STORMY,
-    SUNNY
+    SUNNY,
 } WeatherCondition_t;
 
 #endif

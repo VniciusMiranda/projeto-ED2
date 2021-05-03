@@ -26,7 +26,6 @@
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
 
-
 bool equals(const char* str1, const char *str2);
 
 bool str_array_contains(const char* str, char* str_array[], int array_size);
@@ -46,5 +45,7 @@ int replace_str(char* str, char* sub_str, char* rp_str);
 void print_line(FILE* f, int size, char c);
 
 int get_curr_asc_time(char* dest);
+
+void swap_ptr(void** a, void** b);
 
 #endif

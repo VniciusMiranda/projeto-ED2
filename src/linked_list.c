@@ -1,5 +1,8 @@
 #include "linked_list.h"
 
+element_t* partition(element_t* l, element_t * h, int(*get_attr_func)(void*));
+
+void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*));
 
 linked_list_t* create_list() {
     linked_list_t* l = (linked_list_t*) malloc(sizeof(linked_list_t)); 
@@ -230,4 +233,42 @@ int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*)) {
         print_func(f, e->data);
         e = e->next;
     }
+}
+
+int sort_list(linked_list_t* l, int(*get_attr_func)(void*)) {
+    if(!l) return ERR;
+
+    _quickSort(l->head, l->tail, get_attr_func);
+
+}
+
+void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
+    if (h != NULL && l != h && l != h->next)
+    {
+        element_t* p = partition(l, h, get_attr_func);
+        _quickSort(l, p->prev, get_attr_func);
+        _quickSort(p->next, h, get_attr_func);
+    }
+}
+
+element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
+    // set pivot as h element
+    int x = get_attr_func(h->data);
+ 
+    // similar to i = l-1 for array implementation
+    element_t* i = l->prev;
+ 
+    // Similar to "for (int j = l; j <= h- 1; j++)"
+    for (element_t* j = l; j != h; j = j->next) {
+        if (get_attr_func(j->data) <= x) {
+            // Similar to i++ for array
+            i = (i == NULL)? l : i->next;
+ 
+            swap_ptr(&(i->data), &(j->data));
+        }
+    }
+    i = (i == NULL)? l : i->next; // Similar to i++
+    swap_ptr(&(i->data), &(h->data));
+
+    return i;
 }

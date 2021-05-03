@@ -26,7 +26,6 @@ int main(int numb_args, char* args[]) {
     strcpy(log_file_name, "");
     init();
 
-
     if(init() == ERR) {
         log_error("couldn't init application");
         exit(EXIT_FAILURE);

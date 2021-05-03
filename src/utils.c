@@ -120,3 +120,9 @@ int get_curr_asc_time(char* dest) {
 
     return OK;
 }
+
+void swap_ptr(void** a, void** b) {
+    void* tmp = *a;
+    *a = *b;
+    *b = tmp;
+}

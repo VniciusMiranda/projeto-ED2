@@ -133,5 +133,15 @@ bool contains_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cm
 */
 int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*, void*));
 
+/*
+    Sort the list by the attribute of the struct returned by
+    @get_attr_func function.
+    params:
+        linked_list_t* l
+        get_attr_func
+    return: status code.
+*/
+int sort_list(linked_list_t* l, int(*get_attr_func)(void*));
+
 #endif
 

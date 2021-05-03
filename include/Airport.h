@@ -32,7 +32,7 @@ typedef struct Airport {
 
 typedef linked_list_t* Airports_t;
 
-Airport_t* create_ap(char* name, char* code, Location_t* loc);
+Airport_t* create_ap(char* name, char* code, Location_t* loc, WeatherCondition_t* wc);
 
 int destroy_ap(Airport_t* ap);
 
