@@ -48,4 +48,8 @@ int get_curr_asc_time(char* dest);
 
 void swap_ptr(void** a, void** b);
 
+bool is_null_ptr(void* ptr);
+
+bool is_not_null_ptr(void* ptr);
+
 #endif

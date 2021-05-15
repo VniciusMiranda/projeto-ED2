@@ -32,6 +32,10 @@ int insert_pair_hm(hash_map_t* hm, char* key, void* value);
 
 int delete_pair_hm(hash_map_t* hm, char* key, void* value);
 
+int foreach_hm(hash_map_t* hm,void(*func)(char*, void*, int, void*), void* d);
+
+int print_hm(hash_map_t* hm, void(*print_func)(char*, void*));
+
 #endif
 
 

@@ -121,6 +121,14 @@ int get_curr_asc_time(char* dest) {
     return OK;
 }
 
+bool is_null_ptr(void* ptr) {
+    return !ptr;
+}
+
+bool is_not_null_ptr(void* ptr) {
+    return ptr;
+}
+
 void swap_ptr(void** a, void** b) {
     void* tmp = *a;
     *a = *b;

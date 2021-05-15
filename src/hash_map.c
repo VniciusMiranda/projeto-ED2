@@ -12,7 +12,7 @@ hash_map_t* create_hm(unsigned int size) {
     if(!new_hm->pairs) return NULL;
 
     for(int i = 0; i < size; i++)
-        new_hm->pairs = NULL;
+        new_hm->pairs[i] = NULL;
 
     new_hm->size = size;
 
@@ -118,6 +118,35 @@ void* get_value_hm(hash_map_t* hm, char* key) {
 
     return NULL;
 } 
+
+int foreach_hm(hash_map_t* hm,void(*func)(char*, void*, int, void*), void* d) {
+    int j = 0;
+    log_warning("foreach hash map");
+    for(int i = 0; i < hm->size; i ++) {
+        if(is_not_null_ptr(hm->pairs[i])) {
+            pair_t* p = hm->pairs[i];
+            while(p) {
+                func(p->key, p->value, j, d);
+                j++;
+                p = p->next;
+            }
+        }
+    }
+    return OK;
+}
+
+int print_hm(hash_map_t* hm, void(*print_func)(char*, void*)) {
+    for(int i = 0 ; i < hm->size; i++) {
+        if(is_not_null_ptr(hm->pairs[i])) {
+            pair_t* p = hm->pairs[i];
+            while(p) {
+                print_func(p->key,p->value);
+                p = p->next;
+            }
+        }
+    }
+
+}
 
 
 

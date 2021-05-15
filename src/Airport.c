@@ -1,15 +1,19 @@
 #include "Airport.h"
 
+Airport_t* create_ap(char* name, char* code, Location_t* loc, WeatherCondition_t* wc) {
+
+}
+
 int write_ap(Airport_t* ap) {
     if(!ap) return ERR;
 
-    char* table_path[PATH_MAX]; 
+    char table_path[PATH_MAX]; 
     getTablePath_ap(table_path);
 
-    FILE* fopen();
-
-
-
+    FILE* f = fopen(table_path, "a");
+    if(!f) return ERR; 
+    fwrite(ap, sizeof(ap), 1, f);
+    fclose(f);
 }
 
 bool find_airport_by_name(void* d, void* cmp) {

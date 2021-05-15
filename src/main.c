@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h> 
+#include <curl/curl.h>
 
 #include "utils.h"
 #include "log.h"
@@ -23,14 +24,15 @@ void runCl();
 int init();
 
 int main(int numb_args, char* args[]) {
-    strcpy(log_file_name, "");
-    init();
+    set_log_file("");
 
     if(init() == ERR) {
         log_error("couldn't init application");
         exit(EXIT_FAILURE);
     }
         
+    getWetherCondition("somethings");
+
     if(handle_options(numb_args, args) == ERR) {
         log_error( "invalid arguments...");
         log_error("exiting.");
@@ -40,13 +42,15 @@ int main(int numb_args, char* args[]) {
     }
 
     log_error("exit success.");
+    clean_log();
     exit(EXIT_SUCCESS);
 }
 
 
 void print_options() {
-    fprintf(log_file, "tente novamente passando uma das opcoes listadas:\n");
-    for (int i = 0; i < NUMB_OPTIONS; i++) fprintf(log_file, "\t%s\n", options[i]);
+    fprintf(LOG_FILE, "tente novamente passando uma das opcoes listadas:\n");
+    for (int i = 0; i < NUMB_OPTIONS; i++) 
+        fprintf(LOG_FILE, "\t%s\n", options[i]);
 }
 
 int handle_options(int numb_opts, char* opts[]) {
@@ -66,6 +70,7 @@ void runCl() {
 }
 
 int init() {
+    curl_global_init(CURL_GLOBAL_ALL);
     init_log();
     init_db();
 }
