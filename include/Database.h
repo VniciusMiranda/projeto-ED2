@@ -7,13 +7,17 @@
 #include "hash_map.h"
 
 #define DB_DIR "/database/" 
+#define MAX_FOREIGN_KEY 400L
 
 static char DB_PATH[PATH_MAX];
 
-int init_db();
-int init_tables_db();
-int init_table_db(char* table_name);
-int getTablePath_db(char* dest, char* table_name);
+int init_database();
+
+int init_database_tables();
+
+int create_database_table(char* table_name);
+
+int get_database_table_path(char* dest, char* table_name);
 
 
 #endif

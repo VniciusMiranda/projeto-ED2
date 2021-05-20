@@ -14,8 +14,7 @@ int init_log() {
             exit(EXIT_FAILURE); 
         }
     }
-
-    log_info("application log initialized");
+    log_title("APPLICATION LOG INITIALIZED", 28, '#');
     return OK;
 }
 
@@ -24,6 +23,7 @@ int set_log_file(char* file_name) {
     return OK;
 }
 
+// don't know wtf is this
 void clean_log() {
     if(CUSTOM_LOG_FILE)
         fclose(LOG_FILE);
@@ -33,9 +33,9 @@ int log_info(char* str) {
     char timestamp[TEXT_MAX]; 
     get_curr_asc_time(timestamp);
 
-    fprintf(LOG_FILE,"\033[0;32m"); //Set the text to the color blue.
+    set_color(LOG_FILE, GREEN, false);
     fprintf(LOG_FILE, "INFO(%s): %s", timestamp, str);
-    fprintf(LOG_FILE,"\033[0m"); 
+    reset_color(LOG_FILE);
     fprintf(LOG_FILE, "\n");
     
     if(CUSTOM_LOG_FILE)
@@ -47,14 +47,13 @@ int log_error(char* str) {
     char timestamp[TEXT_MAX]; 
     get_curr_asc_time(timestamp);
 
-    fprintf(LOG_FILE,"\033[0;31m"); //Set the text to the color red.
+    set_color(LOG_FILE, RED, false);
     fprintf(LOG_FILE, "ERROR(%s): %s", timestamp, str);
-    fprintf(LOG_FILE,"\033[0m");
+    reset_color(LOG_FILE);
     fprintf(LOG_FILE, "\n");
 
     if(CUSTOM_LOG_FILE)
         fflush(LOG_FILE);
-
     return OK;
 }
 
@@ -62,13 +61,29 @@ int log_warning( char* str) {
     char timestamp[TEXT_MAX]; 
     get_curr_asc_time(timestamp);
   
-    fprintf(LOG_FILE,"\033[0;33m"); //Set the text to the color yellow.
+    set_color(LOG_FILE, YELLOW, false);
     fprintf(LOG_FILE, "WARN(%s): %s", timestamp, str);
-    fprintf(LOG_FILE,"\033[0m"); 
+    reset_color(LOG_FILE); 
     fprintf(LOG_FILE, "\n");
 
     if(CUSTOM_LOG_FILE)
         fflush(LOG_FILE);
-
     return OK;
 }
+
+int log_print_line(int size, char c) {
+    set_color(LOG_FILE, BLUE, true);
+    print_line(LOG_FILE, size, c);
+    reset_color(LOG_FILE);
+}
+
+int log_title(char* str, int length, char c) {
+    log_print_line(100, '#');
+    int counter = 50 - length/2; 
+    while(counter--) fprintf(LOG_FILE, " ");
+    set_color(LOG_FILE, BLUE, true);
+    fprintf(LOG_FILE,"%s\n", str); 
+    reset_color(LOG_FILE);
+    log_print_line(100, '#');
+}
+     

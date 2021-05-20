@@ -18,6 +18,7 @@
 #include <ncurses.h>
 
 #include "type.h"
+#include "colors.h"
 
 #define TEXT_MAX 256
 

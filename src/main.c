@@ -11,6 +11,7 @@
 #include "Airport.h"
 
 #include "Database.h"
+#include "idresolver.h"
 
 char* options[] = {"run-ui", "run-cl"};
 int NUMB_OPTIONS = ARRAY_SIZE(options);
@@ -24,14 +25,10 @@ void runCl();
 int init();
 
 int main(int numb_args, char* args[]) {
-    set_log_file("");
-
     if(init() == ERR) {
         log_error("couldn't init application");
         exit(EXIT_FAILURE);
     }
-        
-    getWetherCondition("somethings");
 
     if(handle_options(numb_args, args) == ERR) {
         log_error( "invalid arguments...");
@@ -48,9 +45,11 @@ int main(int numb_args, char* args[]) {
 
 
 void print_options() {
+    set_color(LOG_FILE, PURPLE, true);
     fprintf(LOG_FILE, "tente novamente passando uma das opcoes listadas:\n");
     for (int i = 0; i < NUMB_OPTIONS; i++) 
         fprintf(LOG_FILE, "\t%s\n", options[i]);
+    reset_color(LOG_FILE);
 }
 
 int handle_options(int numb_opts, char* opts[]) {
@@ -70,9 +69,12 @@ void runCl() {
 }
 
 int init() {
+    set_log_file("");
+
     curl_global_init(CURL_GLOBAL_ALL);
     init_log();
-    init_db();
+    init_database();
+    resolve_table_ids();
 }
 
 
