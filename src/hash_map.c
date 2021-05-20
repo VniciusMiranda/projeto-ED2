@@ -121,7 +121,6 @@ void* get_value_hm(hash_map_t* hm, char* key) {
 
 int foreach_hm(hash_map_t* hm,void(*func)(char*, void*, int, void*), void* d) {
     int j = 0;
-    log_warning("foreach hash map");
     for(int i = 0; i < hm->size; i ++) {
         if(is_not_null_ptr(hm->pairs[i])) {
             pair_t* p = hm->pairs[i];

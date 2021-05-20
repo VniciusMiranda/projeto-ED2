@@ -1,4 +1,3 @@
-/* created by: Vinicius Miranda  25/03/2021 */
 #ifndef __LINKED_LIST_H__
 #define __LINKED_LIST_H__
 
@@ -29,7 +28,7 @@ linked_list_t* create_list();
     params: linked_list_t* l => list to be destoy.
     return: status code.
 */
-int destroy_list(linked_list_t* l);
+int destroy_list(linked_list_t* l, int(dealloc)(void*));
 
 /*
     Insert element at the end of the list.
@@ -131,7 +130,7 @@ bool contains_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cm
         print_func => function that will print the values of the data.
     return: status code.
 */
-int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*, void*));
+int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*, void*, color_t, bool), color_t color, bool is_bold);
 
 /*
     Sort the list by the attribute of the struct returned by
@@ -142,6 +141,17 @@ int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*, void*));
     return: status code.
 */
 int sort_list(linked_list_t* l, int(*get_attr_func)(void*));
+
+/*
+    Copy list @src to @dest.
+    params:
+        linked_list_t* dest
+        linked_list_t* src
+    return: status code.
+*/
+int copy_list(linked_list_t* dest, linked_list_t* src);
+
+bool is_empty_list(linked_list_t* l);
 
 #endif
 

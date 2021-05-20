@@ -30,5 +30,9 @@ $(EXECUTABLE): $(OBJ)
 
 .PHONY: clean
 
+# make gives an error at the end for some reason
+run:
+	./$(EXECUTABLE)
+
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~  

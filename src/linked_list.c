@@ -15,12 +15,14 @@ linked_list_t* create_list() {
     return l;
 }
 
-int destroy_list(linked_list_t* l) {
+int destroy_list(linked_list_t* l, int(dealloc)(void*)) {
+    if(!l) return ERR;
 
     element_t* e = l->head, *tmp;
     while(e) {
         tmp = e;
         e = e->next;
+        if(dealloc(tmp->data) == ERR) return ERR;
         free(tmp);
     } 
 
@@ -223,14 +225,13 @@ bool contains_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cm
     return false;
 }
 
-int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*)) {
+int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*, color_t, bool), color_t color, bool is_bold) {
     if(!l) return ERR;
     if(!f) f = stdout;
    
-
     element_t* e = l->head;
     while(e) {
-        print_func(f, e->data);
+        print_func(f, e->data, color, is_bold);
         e = e->next;
     }
 }
@@ -271,4 +272,12 @@ element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
     swap_ptr(&(i->data), &(h->data));
 
     return i;
+}
+
+int copy_list(linked_list_t* dest, linked_list_t* src) {
+    if(is_null_ptr(dest) || is_null_ptr(src)) return ERR;
+}
+
+bool is_empty_list(linked_list_t* l) {
+    return !(l && l->length);
 }
