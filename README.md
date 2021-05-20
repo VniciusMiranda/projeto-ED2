@@ -31,11 +31,26 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
 * Visualizar;
    - Dentro da opção visualizar o usuário poderá ordernar como desejar os dados mostrados.
 
+### Depêndencias para build
+
+- [make](https://www.gnu.org/software/make/)
+
 ### Depêndencias
 
-O Airline Management System utilizará a linguagem de programação C e a biblioteca visual ncurses.
+- [curllib](https://curl.se/libcurl/c/)
+- [ncurses](https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/)
+
 
 ### Como compilar e rodar
+
+Obs: o projeto e apenas compativel com linux OS e o compilador usado foi GCC.
+
+#### Instalar depêndencias
+
+Para debian/ubuntu, rode no terminal:
+```
+sudo apt install curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make 
+```
 
 Dentro do  diretório *project* siga as seguintes instruções:
 
