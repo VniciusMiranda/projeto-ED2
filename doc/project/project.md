@@ -108,16 +108,6 @@ Fields:
 
 <br/>
 
-## Passenger
----
-| nome                  | tipo                          | descrição              |
-| -------------         | -----------                   | ---                    |
-|   id                  |long int                       |identificador           |
-|   name                | string                        | nome da companhia aerea|
-|   plane               | _Plane_                       | aeronave               |
-
-<br/>
-<br/>
 
 ## Histórico de versões do documento
 

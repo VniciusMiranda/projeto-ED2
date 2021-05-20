@@ -13,10 +13,10 @@ EXECUTABLE := executable/airline-management
 # libraries
 LIBS := -lncurses -lcurl 
 
-_DEPS := https.h type.h utils.h log.h linked_list.h Airport.h Location.h WeatherCondition.h Database.h hash_map.h
+_DEPS := idresolver.h colors.h Plane.h https.h type.h utils.h log.h linked_list.h Airport.h Location.h WeatherCondition.h Database.h hash_map.h
 DEPS  := $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ := https.o main.o utils.o log.o linked_list.o Airport.o Location.o WeatherCondition.o Database.o hash_map.o 
+_OBJ := idresolver.o colors.o Plane.o https.o main.o utils.o log.o linked_list.o Airport.o Location.o WeatherCondition.o Database.o hash_map.o 
 OBJ  := $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
