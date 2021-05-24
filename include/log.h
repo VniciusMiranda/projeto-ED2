@@ -15,7 +15,8 @@ FILE* LOG_FILE;
 
 char LOG[LOG_MAX];
 
-int init_log();
+int init_log(bool enable_color, bool use_log_file);
+
 void clean_log();
 
 int set_log_file(char* file_name);
