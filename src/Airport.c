@@ -146,13 +146,13 @@ void print_airport(FILE* f, void* d, color_t color, bool is_bold) {
     getName_wc(ap->WeatherCondition, wc);
 
     set_color(f, color, is_bold);
-    print_line(LOG_FILE, 0, 0);
-    fprintf(LOG_FILE, "id: %ld\n", ap->id);
-    fprintf(LOG_FILE, "nome do aeroporto: %s\n", ap->name);
-    fprintf(LOG_FILE, "codigo: %s\n", ap->code);
-    fprintf(LOG_FILE, "cidade: %s\n", ap->location.city);
-    fprintf(LOG_FILE, "país: %s\n", ap->location.country);
-    fprintf(LOG_FILE, "weather condition: %s\n", wc);
+    print_line(f, 80, 0);
+    fprintf(f, "id: %ld\n", ap->id);
+    fprintf(f, "nome do aeroporto: %s\n", ap->name);
+    fprintf(f, "codigo: %s\n", ap->code);
+    fprintf(f, "cidade: %s\n", ap->location.city);
+    fprintf(f, "país: %s\n", ap->location.country);
+    fprintf(f, "weather condition: %s\n", wc);
 
     reset_color(f);
 }

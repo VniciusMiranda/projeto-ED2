@@ -35,7 +35,7 @@ int main(int numb_args, char* args[]) {
 int init() {
 
     curl_global_init(CURL_GLOBAL_ALL);
-    init_log(true, true);
+    init_log(false, true);
     init_database();
     resolve_table_ids();
 }

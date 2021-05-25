@@ -6,7 +6,6 @@
 
 #include "utils.h"
 
-
 typedef struct location { 
     char city[CITY_NAME_MAX];
     char country[COUNTRY_NAME_MAX];

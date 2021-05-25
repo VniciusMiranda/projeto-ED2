@@ -207,5 +207,31 @@ int print_success(FILE* f, char* message) {
     reset_color(f);
 }
 
+int print_warning(FILE* f, char* message) {
+    set_color(f, YELLOW, true);
+    fprintf(f, "ATENÇÃO:\n");
+    fprintf(f, "%s\n", message);
+    reset_color(f);
+}
+
+int clear_input_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);  
+}
+
+void trim_trailing_empty_space(char* str)
+{
+    int index, i;
+    index = -1;
+    i = 0;
+    while(str[i] != '\0'){
+        if(str[i] != ' ' && str[i] != '\t' && str[i] != '\n') {
+            index= i;
+        }
+        i++;
+    }
+    str[index + 1] = '\0';
+}
+
 
 

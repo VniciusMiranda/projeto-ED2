@@ -234,6 +234,7 @@ int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*, color_t
         print_func(f, e->data, color, is_bold);
         e = e->next;
     }
+    return OK;
 }
 
 int sort_list(linked_list_t* l, int(*get_attr_func)(void*)) {
