@@ -93,6 +93,7 @@ int update_airport(Airport_t* new_ap, unsigned long int id) {
 
     }
 }
+
 bool find_airport_by_name(void* d, void* cmp) {
     Airport_t* ap = (Airport_t*) d, *cmp_ap = (Airport_t*) cmp;
     return equals(ap->name, cmp_ap->name); 
