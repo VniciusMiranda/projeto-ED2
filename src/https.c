@@ -53,7 +53,6 @@ int GETrequest(url_params_t params, char* _url, content_t* response) {
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
 
     log_warning(response->str);
-
       
     curl_easy_setopt(curl, CURLOPT_ALTSVC , (long) CURL_HTTP_VERSION_3);
 

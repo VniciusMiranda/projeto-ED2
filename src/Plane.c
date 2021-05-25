@@ -1,20 +1,17 @@
 #include "Plane.h"
 
-unsigned long int LAST_VALID_ID_PLANE;
 
-Plane_t* create_plane(char* model, int capacity, AirlineCompanies_t companies){
+Plane_t* create_plane(char* model, int capacity, AirlineCompany_t airline_company){
     if(is_null_ptr(model) || capacity < 1) return NULL;
 
     Plane_t* new_plane = (Plane_t*) malloc(sizeof(Plane_t));
     if(is_null_ptr(new_plane)) return NULL;
 
-    AirlineCompany_t* comp = (AirlineCompany_t*)find_element(companies, find_company_by_model, model);
-
     strcpy(new_plane->model, model);
     new_plane->capacity = capacity;
-    new_plane->airlineCompany = *comp;
     new_plane->id = ++LAST_VALID_ID_PLANE;
 
+    new_plane->airlineCompany = airline_company; 
     return new_plane;
 }
 
@@ -38,8 +35,9 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
 }
 
 bool find_plane_by_model(void* d, void* cmp) {
-    Plane_t* pl = (Plane_t*) d, *cmp_pl = (Plane_t*) cmp;
-    return equals(pl->model, cmp_pl->model); 
+    Plane_t* pl = (Plane_t*) d;
+    plane_model_t* pm = (plane_model_t*) cmp;
+    return pl->model == *pm; 
 }
 
 int write_plane(Plane_t* pl) {

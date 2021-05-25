@@ -101,7 +101,6 @@ Fields:
 | -------------         | -----------                   | ---                    |
 |   id                  | long int                      | identificador          |
 |   name                | string                        | nome da companhia aerea|
-|   planes              | lista de _Planes_             | aeronaves que possui   |
 |   country             | string                        | pais da companhia      |
 
 <br/>

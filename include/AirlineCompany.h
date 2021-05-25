@@ -2,16 +2,14 @@
 #define _AIRLINECOMPANY_H_
 
 #define COMPANY_NAME_MAX 128
-#define COUNTRY_NAME_MAX 128
 
 #include "linked_list.h"
 #include "log.h"
-#include "Plane.h"
+#include "Location.h"
 
 typedef struct AirlineCompany {
     unsigned long int id;
     char name[COMPANY_NAME_MAX];
-    Planes_t planes; 
     char country[COUNTRY_NAME_MAX];
 } AirlineCompany_t;
 
@@ -24,7 +22,4 @@ int dealloc_airCom(void* airCom_ptr);
 void print_company(FILE* f, void* d, color_t color, bool is_bold);
 
 bool find_company_by_name(void* d, void* cmp);
-
-bool find_company_by_model(void* d, void* model)
-
 #endif

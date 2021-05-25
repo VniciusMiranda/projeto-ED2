@@ -10,8 +10,9 @@
 
 #define TABLE_NAME_PLANE "plane"
 
-/*
-typedef enum models {
+unsigned long int LAST_VALID_ID_PLANE;
+
+typedef enum plane_model {
     Airbus_A320 = 1,
     Boeing_737,
     DC_9MD_80,
@@ -22,19 +23,18 @@ typedef enum models {
     Airbus_A330,
     Boeing_747,
     Boeing_787
-} models_t;
-*/
+} plane_model_t;
 
 typedef struct plane {
     unsigned long int id;
-    char model[PLANE_MODEL_MAX];
+    plane_model_t model;
     AirlineCompany_t airlineCompany;
     int capacity;
 } Plane_t;
 
 typedef linked_list_t* Planes_t;
 
-Plane_t* create_plane(char* model, int capacity);
+Plane_t* create_plane(char* model, int capacity, AirlineCompany_t airline_company);
 
 int dealloc_pl(void* pl_ptr);
 
@@ -62,6 +62,6 @@ int init_planes_table();
 
 long int resolve_planes_id();
 
-int get_planes_table_path();
+int get_plane_table_path(char* dest);
 
 #endif 

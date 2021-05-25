@@ -62,12 +62,6 @@ get_attr_func get_airport_field(FILE* f) {
 
 
     switch(selected_option) {
-        char country[COUNTRY_NAME_MAX];
-        char name[AIRPORT_NAME_MAX];
-        char code[AIRPORT_CODE_MAX];
-        char city[CITY_NAME_MAX];
-        long int id;
-
         case 1:
             return get_airport_id;
         
@@ -76,7 +70,6 @@ get_attr_func get_airport_field(FILE* f) {
 
         case 3: 
             return get_airport_code;
-           
 
         case 4: 
             return get_airport_city;
@@ -371,8 +364,10 @@ int run_airport_menu(FILE* f, bool* exit) {
                 break;
 
             case 5:
+                // inserir conexao
                 break;
             case 6:
+                // inserir aviao
                 break;
             case 7:
                 bye = true;
