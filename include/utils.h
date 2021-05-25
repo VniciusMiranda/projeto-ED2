@@ -21,6 +21,10 @@
 #include "colors.h"
 
 #define TEXT_MAX 256
+typedef struct int_array {
+    long int* array;
+    int size;
+} int_array_t;
 
 /* get the name of a variable */
 #define getName(var, str) sprintf(str, "%s", #var) 
@@ -44,6 +48,7 @@ int substr_index(char* str, char* sub_str);
 int replace_str(char* str, char* sub_str, char* rp_str);
 
 void print_line(FILE* f, int size, char c);
+void print_line_with_color(FILE* f, int size, char c, color_t color, bool is_bold);
 
 int get_curr_asc_time(char* dest);
 

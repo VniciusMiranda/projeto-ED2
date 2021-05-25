@@ -109,6 +109,17 @@ void print_line(FILE* f, int size, char c) {
     fprintf(f, "\n");
 }
 
+void print_line_with_color(FILE* f, int size, char c, color_t color, bool is_bold) {
+    if(!size) size = 60;
+    if(!c) c = '-';
+    if(!f) f = stdout;
+    set_color(f, color, is_bold);
+    for(int i = 0; i < size; i++)
+        fprintf(f, "%c", c);
+    fprintf(f, "\n");
+    reset_color(f);
+}
+
 int get_curr_asc_time(char* dest) {
     if(!dest) return ERR;
 

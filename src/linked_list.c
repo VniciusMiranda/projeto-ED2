@@ -1,8 +1,8 @@
 #include "linked_list.h"
 
-element_t* partition(element_t* l, element_t * h, int(*get_attr_func)(void*));
+element_t* partition(element_t* l, element_t * h, int(*get_attr_func)(void*), int option);
 
-void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*));
+void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*), int option);
 
 linked_list_t* create_list() {
     linked_list_t* l = (linked_list_t*) malloc(sizeof(linked_list_t)); 
@@ -237,23 +237,23 @@ int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*,void*, color_t
     return OK;
 }
 
-int sort_list(linked_list_t* l, int(*get_attr_func)(void*)) {
+int sort_list(linked_list_t* l, int(*get_attr_func)(void*), int option) {
     if(!l) return ERR;
 
-    _quickSort(l->head, l->tail, get_attr_func);
+    _quickSort(l->head, l->tail, get_attr_func, option);
 
 }
 
-void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
+void _quickSort(element_t* l, element_t* h, int(*get_attr_func)(void*), int option) {
     if (h != NULL && l != h && l != h->next)
     {
-        element_t* p = partition(l, h, get_attr_func);
-        _quickSort(l, p->prev, get_attr_func);
-        _quickSort(p->next, h, get_attr_func);
+        element_t* p = partition(l, h, get_attr_func, option);
+        _quickSort(l, p->prev, get_attr_func, option);
+        _quickSort(p->next, h, get_attr_func, option);
     }
 }
 
-element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
+element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*), int option) {
     // set pivot as h element
     int x = get_attr_func(h->data);
  
@@ -262,11 +262,21 @@ element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*)) {
  
     // Similar to "for (int j = l; j <= h- 1; j++)"
     for (element_t* j = l; j != h; j = j->next) {
-        if (get_attr_func(j->data) <= x) {
-            // Similar to i++ for array
-            i = (i == NULL)? l : i->next;
- 
-            swap_ptr(&(i->data), &(j->data));
+        if(option == ASCENDING) {
+            if (get_attr_func(j->data) <= x) {
+                // Similar to i++ for array
+                i = (i == NULL)? l : i->next;
+    
+                swap_ptr(&(i->data), &(j->data));
+            }
+        }
+        else {
+            if (get_attr_func(j->data) >= x) {
+                // Similar to i++ for array
+                i = (i == NULL)? l : i->next;
+    
+                swap_ptr(&(i->data), &(j->data));
+            }
         }
     }
     i = (i == NULL)? l : i->next; // Similar to i++

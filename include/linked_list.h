@@ -3,6 +3,9 @@
 
 #include "utils.h"
 
+#define DESCENDING 0
+#define ASCENDING 1
+
 
 typedef struct element {
     void* data;
@@ -15,6 +18,9 @@ typedef struct linked_list {
     element_t* head;
     element_t* tail;
 } linked_list_t;
+
+
+typedef bool(*search_func)(void*, void*);
 
 /*
     Creates a generic linked list.
@@ -140,7 +146,7 @@ int print_list(FILE* f, linked_list_t* l, void(*print_func)(FILE*, void*, color_
         get_attr_func
     return: status code.
 */
-int sort_list(linked_list_t* l, int(*get_attr_func)(void*));
+int sort_list(linked_list_t* l, int(*get_attr_func)(void*), int option);
 
 /*
     Copy list @src to @dest.
