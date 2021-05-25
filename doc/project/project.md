@@ -32,6 +32,7 @@ Fields:
 | location              | Location                      | localização geografica do aeroporto                       |
 | planes                | Lista ligada de _Planes_      | aeronaves localizadas nesse aeroporto no exato momento    |
 | connections           | lista ligada de _Airport_     | outros aeroportos que se pode ir a partir do atual        |
+
 <br/>
 
 ## WetherCondition
@@ -41,9 +42,9 @@ Struct para representar a condição do tempo.
 
 Fields: 
 
-| nome                  | tipo      | descrição                     |
-| -------------         | ----------| ---                           |
-| condition             | string    | condição do tempo             |
+| nome                  | tipo      | descrição                                        |
+| -------------         | ----------| ---                                              |
+| condition             | string    | condição do tempo                                |
 | lastTimeChecked       | timestamp | ultima vez que foi checado as condicoes de tempo |
 
 NOTE:  
@@ -88,9 +89,7 @@ Fields:
 | -------------         | -----------                   | ---                               |
 |   model               | enum _Models_                 | modelo da aeronave                |
 |   airlineCompany      | _AirlineCompany_              | companhia aerea dona da aeronave  |
-| brand                 | enum _PlaneBrand              | marca da aeronave                 |
 |   capacity            | int                           | numero maximo de passageiros      |
-| current_route         | _Route_                       |  rota de navegacao atual          |
 
 <br/>
 
@@ -100,21 +99,20 @@ Fields:
 
 | nome                  | tipo                          | descrição              |
 | -------------         | -----------                   | ---                    |
-|   id                  |long int                       |identificador           |
+|   id                  | long int                      | identificador          |
 |   name                | string                        | nome da companhia aerea|
-| planes                | lista de _Planes_             | aeronaves que possui   |
-| country               | string                        | pais da companhia      |
-
+|   planes              | lista de _Planes_             | aeronaves que possui   |
+|   country             | string                        | pais da companhia      |
 
 <br/>
 
-
 ## Histórico de versões do documento
 
-| Responsável           | Descrição                                     |  Data             |
-| -------------         | -----------                                   | ---               |
-| Vinicius M Miranda    | Primeira versão do documento                  | 04/03/2021        |
-| Vinicius M Miranda    | adicionando fields e structs que faltaram | 19/03/2021        |
+| Responsável           | Descrição                                     | Data         |
+| -------------         | -----------                                   | ---          |
+| Vinicius M Miranda    | Primeira versão do documento                  | 04/03/2021   |
+| Vinicius M Miranda    | adicionando fields e structs que faltaram     | 19/03/2021   |
+| Victor Eduardo I M    | ajustando campos de structs                   | 25/05/2021   |
 
 
 
