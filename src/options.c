@@ -27,7 +27,7 @@ void runUi() {
 }
 
 void runCl() {
-    run_command_line();
+    run_command_line(stdout);
 }
 
 

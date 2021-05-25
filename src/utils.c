@@ -134,3 +134,78 @@ void swap_ptr(void** a, void** b) {
     *a = *b;
     *b = tmp;
 }
+
+int print_menu_options(FILE* f, color_t color, char* options[], int size) {
+    set_color(stdout, WHITE, true);
+    fprintf(f, "selecione a opcao desejada:\n");
+    reset_color(f);
+
+    set_color(stdout, color, true);
+    for(int i = 0; i < size; i++) {
+        fprintf(f, "%d - %s\n", i+1, options[i]);
+    }
+    reset_color(f);
+}
+
+int get_selected_option(FILE* f, color_t color, char* options[], int size) {
+    int selected_option;
+
+    while(true) {
+        fprintf(f, ">");
+        scanf("%d", &selected_option);
+
+        if(selected_option > 0 && selected_option <= size) 
+            break;
+
+        set_color(f, RED, true); 
+        fprintf(f, "ERRO:\n");
+        fprintf(f, "opcao selecionada invalida!\n");
+        fprintf(f, "tente novamente.\n");
+        reset_color(f);
+
+        set_color(f, WHITE, true);
+        print_line(f, 80, '-');
+        reset_color(f);
+
+        print_menu_options(f, color, options, size);
+    }
+
+    return selected_option;
+}
+
+int print_title(FILE* f, color_t color, char* title, char line_char, int title_size) {
+    int line_size = 80;
+
+    set_color(f, color, true);
+    print_line(f, line_size, line_char);
+    reset_color(f);
+
+    // centralize the text
+    int center_pos = line_size/2 - title_size; 
+    while(center_pos--) fprintf(f," ");
+
+    set_color(f, WHITE, true);
+    fprintf(f, "%s\n", title);
+    reset_color(f);
+
+    set_color(f, color, true);
+    print_line(f, line_size, line_char);
+    reset_color(f);
+}
+
+int print_error(FILE* f, char* message) {
+    set_color(f, RED, true);
+    fprintf(f, "ERROR:\n");
+    fprintf(f, "%s\n", message);
+    reset_color(f);
+}
+
+int print_success(FILE* f, char* message) {
+    set_color(f, GREEN, true);
+    fprintf(f, "SUCESSO:\n" );
+    fprintf(f, "%s\n", message);
+    reset_color(f);
+}
+
+
+

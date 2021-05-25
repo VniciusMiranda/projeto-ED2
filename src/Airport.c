@@ -17,6 +17,7 @@ Airport_t* create_airport(char* name, char* code, Location_t* loc) {
     new_airport->location = *loc;
 
     new_airport->id = ++LAST_VALID_ID_AIRPORT;
+    new_airport->deleted = false;
 
     // hardcoded test value
     new_airport->WeatherCondition = (WeatherCondition_t) SUNNY;

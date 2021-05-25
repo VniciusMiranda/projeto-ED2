@@ -20,6 +20,7 @@ typedef linked_list_t* Connections_t;
 
 typedef struct Airport {
     unsigned long int id;
+    bool deleted;
     char name[AIRPORT_NAME_MAX];
     char code[AIRPORT_CODE_MAX];
     Location_t location;
