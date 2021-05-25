@@ -53,4 +53,14 @@ bool is_null_ptr(void* ptr);
 
 bool is_not_null_ptr(void* ptr);
 
+int print_menu_options(FILE* f, color_t color, char* options[], int size);
+
+int get_selected_option(FILE* f, color_t color, char* options[], int size);
+
+int print_title(FILE* f, color_t color, char* title, char line_char, int title_size);
+
+int print_error(FILE* f, char* message);
+
+int print_success(FILE* f, char* message);
+
 #endif

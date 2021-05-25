@@ -11,6 +11,7 @@
 #include "options.h"
 
 int init();
+int clean();
 
 int main(int numb_args, char* args[]) {
     if(init() == ERR) {
@@ -27,17 +28,22 @@ int main(int numb_args, char* args[]) {
     }
 
     log_error("exit success.");
-    clean_log();
+    clean();
     exit(EXIT_SUCCESS);
 }
 
 int init() {
 
     curl_global_init(CURL_GLOBAL_ALL);
-    init_log(true, false);
+    init_log(true, true);
     init_database();
     resolve_table_ids();
 }
+
+int clean() {
+    clean_log();
+}
+
 
 
 

@@ -2,8 +2,6 @@
 
 int quick_sort(void* vec[],int size, int(*get_attr_func)(void*)) {
     if(!vec) return ERR;
-
-
 }
 
 int bubble_sort(void* vec[], int size, int(*get_attr_func)(void*)); 
