@@ -74,6 +74,14 @@ bool all_airports(void* d, void* cmp);
 /* sorting attr functions */
 int get_airport_id(void* d);
 
+int get_airport_name(void* d);
+
+int get_airport_code(void* d);
+
+int get_airport_city(void* d);
+
+int get_airport_country(void* d);
+
 /* data persitance functions */
 
 int write_airport(Airport_t* ap);

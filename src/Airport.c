@@ -307,7 +307,40 @@ bool all_airports(void* d, void* cmp) {
     return true;
 }
 
+
+int get_first_letter_upper_case_int_repr(char* str) {
+    int first_letter = (int) str[0]; 
+    if(first_letter >= 97) {
+        first_letter -= 32;
+    }
+    return first_letter;
+}
+
 int get_airport_id(void* d) {
     Airport_t* ap = (Airport_t*) d;
     return ap->id;
 }
+
+int get_airport_name(void* d) {
+    Airport_t* ap = (Airport_t*) d;
+    return get_first_letter_upper_case_int_repr(ap->name);
+}
+
+int get_airport_code(void* d) {
+    Airport_t* ap = (Airport_t*) d;
+    return get_first_letter_upper_case_int_repr(ap->code);
+
+}
+
+int get_airport_city(void* d) {
+    Airport_t* ap = (Airport_t*) d;
+    return get_first_letter_upper_case_int_repr(ap->location.city);
+}
+
+int get_airport_country(void* d){
+    Airport_t* ap = (Airport_t*) d;
+    return get_first_letter_upper_case_int_repr(ap->location.country);
+}
+
+
+     

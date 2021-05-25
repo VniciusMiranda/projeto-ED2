@@ -13,14 +13,16 @@ char* airport_menu_options[] = {
 };
 int airport_menu_options_size = ARRAY_SIZE(airport_menu_options);
 
+
 char* airport_fields_options[] = {
+    "id",
     "nome",
     "codigo",
-    "id",
     "cidade",
     "pais",
 };
 int airport_fields_options_size = ARRAY_SIZE(airport_fields_options);
+
 
 Airport_t* get_airport_from_user(FILE* f) {
     char name[AIRPORT_NAME_MAX];
@@ -48,7 +50,44 @@ Airport_t* get_airport_from_user(FILE* f) {
     return airport;
 }
 
+get_attr_func get_airport_field(FILE* f) {
+    clear_input_buffer();
+    set_color(f, WHITE, true);
+    fprintf(f, "Por qual campo voce deseja filtrar?\n");
+    reset_color(f);
 
+    print_menu_options(f, BLUE, airport_fields_options, airport_fields_options_size);
+    int selected_option = get_selected_option(f, BLUE, airport_fields_options, airport_fields_options_size);
+    clear_input_buffer();
+
+
+    switch(selected_option) {
+        char country[COUNTRY_NAME_MAX];
+        char name[AIRPORT_NAME_MAX];
+        char code[AIRPORT_CODE_MAX];
+        char city[CITY_NAME_MAX];
+        long int id;
+
+        case 1:
+            return get_airport_id;
+        
+        case 2:
+           return get_airport_name;
+
+        case 3: 
+            return get_airport_code;
+           
+
+        case 4: 
+            return get_airport_city;
+
+        case 5:
+            return get_airport_country;
+
+        default:
+            return NULL;
+    }
+}
 
 search_func get_airport_filter(FILE* f, void** field_value) {
     clear_input_buffer();
@@ -69,6 +108,17 @@ search_func get_airport_filter(FILE* f, void** field_value) {
         long int id;
 
         case 1:
+         print_line_with_color(f, 80, 0, YELLOW, true);
+
+            set_color(f, WHITE, true);
+            fprintf(f, "id:");
+            scanf("%ld", &id);
+            reset_color(f);
+
+            *field_value = (void*) &id; 
+            return find_airport_by_id;
+        
+        case 2:
             print_line_with_color(f, 80, 0, YELLOW, true);
             
             set_color(f, WHITE, true);
@@ -79,7 +129,8 @@ search_func get_airport_filter(FILE* f, void** field_value) {
 
             *field_value = (void*) name; 
             return find_airport_by_name;
-        case 2:
+
+        case 3:
             print_line_with_color(f, 80, 0, YELLOW, true);
 
             set_color(f, WHITE, true);
@@ -90,16 +141,7 @@ search_func get_airport_filter(FILE* f, void** field_value) {
 
             *field_value = (void*) code; 
             return find_airport_by_code;
-        case 3:
-            print_line_with_color(f, 80, 0, YELLOW, true);
-
-            set_color(f, WHITE, true);
-            fprintf(f, "id:");
-            scanf("%ld", &id);
-            reset_color(f);
-
-            *field_value = (void*) &id; 
-            return find_airport_by_id;
+           
 
         case 4:
             print_line_with_color(f, 80, 0, YELLOW, true);
@@ -254,8 +296,22 @@ int _select_airport(FILE* f) {
     reset_color(f);
     clear_input_buffer();
 
+    int order;
+    set_color(f, WHITE, true);
+    fprintf(f, "qual a ordem que sera usada?(1 para ascendente / 0 para descendente)\n");
+    scanf("%d", &order);
+    reset_color(f);
+    clear_input_buffer();
+
+
     if(option == 'y' || option == 'Y') {
-        sort_list(airports, get_airport_id, ASCENDING);
+        set_color(f, WHITE, true);
+        fprintf(f, "Por qual campo voce deseja ordenar?\n");
+        reset_color(f);
+
+        int (*get_attr_func)(void*) = get_airport_field(f);
+
+        sort_list(airports, get_attr_func, order);
     } 
 
     if(is_empty_list(airports)) {

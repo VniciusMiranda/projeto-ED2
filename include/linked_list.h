@@ -19,6 +19,7 @@ typedef struct linked_list {
     element_t* tail;
 } linked_list_t;
 
+typedef int (*get_attr_func)(void*);
 
 typedef bool(*search_func)(void*, void*);
 
