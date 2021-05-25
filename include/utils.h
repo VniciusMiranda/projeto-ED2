@@ -63,4 +63,10 @@ int print_error(FILE* f, char* message);
 
 int print_success(FILE* f, char* message);
 
+int print_warning(FILE* f, char* message);
+
+int clear_input_buffer();
+
+void trim_trailing_empty_space(char* str);
+
 #endif

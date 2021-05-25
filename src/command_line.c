@@ -16,7 +16,7 @@ int print_welcome_message(FILE* f, color_t color) {
 
 int print_goodbye(FILE* f, color_t color) {
     set_color(f, color, true);
-    print_line(f, 0, 0);
+    print_line(f, 80, 0);
     fprintf(f, "tchau :c\n");
     reset_color(f);
 }

@@ -63,6 +63,41 @@ int create_database_table(char* table_name) {
     log_info(LOG);
 }
 
+int delete_database_table(char* table_name) {
+    char table_path[PATH_MAX];
+
+    get_database_table_path(table_path, table_name);
+
+    if(!file_exists(table_path)) {
+        sprintf(LOG, "table %s does not exists", table_name);
+        log_info(LOG);
+        return OK;
+    }
+
+    sprintf(LOG, "deleting storage file for %s", table_name); 
+    log_info(LOG);
+
+    trim_trailing_empty_space(table_path);
+
+    if(remove(table_path) == ERR) {
+        sprintf(LOG, "unable to delete file %s ", table_path);
+        log_error(LOG);
+        return ERR;
+    }
+
+    sprintf(LOG,"table %s deleted",table_name);
+    log_info(LOG);
+
+    return OK;
+} 
+
+int recreate_database_table(char* table_name) {
+    if(delete_database_table(table_name) == ERR) return ERR;
+    if(create_database_table(table_name) == ERR) return ERR;
+
+    return OK;
+}
+
 int get_database_table_path(char* dest, char* table_name) {
     strcpy(dest, DB_PATH);
     strcat(dest, table_name);
