@@ -32,22 +32,22 @@ int getName_wc(WeatherCondition_t wc, char* dest) {
 
     switch(wc) {
         case SUNNY:
-            getName(SUNNY, dest);
+            strcpy(dest, "Sunny");
             break;
         case NOT_FOUND:
-            getName(NOT_FOUND, dest);
+            strcpy(dest, "not found");
             break;
         case CALM:
-            getName(CALM, dest);
+            strcpy(dest, "Calm");
             break;
         case FOGGY:
-            getName(FOGGY, dest);
+            strcpy(dest, "Foggy");
             break;
         case WINDY: 
-            getName(RAINY, dest);
+            strcpy(dest, "Rainy");
             break;
         case STORMY:
-            getName(STORMY, dest);
+            strcpy(dest, "Stormy");
             break;
         default:
             strcpy(dest, "error");

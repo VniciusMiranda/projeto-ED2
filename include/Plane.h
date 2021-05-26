@@ -25,9 +25,6 @@ typedef enum plane_model {
     Boeing_787
 } plane_model_t;
 
-
-int get_name_model(plane_model_t model, char* dest);
-
 typedef struct plane {
     unsigned long int id;
     plane_model_t model;
@@ -37,7 +34,7 @@ typedef struct plane {
 
 typedef linked_list_t* Planes_t;
 
-Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_model_t model);
+Plane_t* create_plane(char* model, int capacity, AirlineCompany_t airline_company);
 
 int dealloc_pl(void* pl_ptr);
 
