@@ -47,19 +47,23 @@ Obs: o projeto e apenas compativel com linux OS e o compilador usado foi GCC.
 
 #### Instalar depêndencias
 
-Para debian/ubuntu, rode no terminal:
+Para instalar as dependências e configurar o projeto pasta rodar o arquivo:
+```
+python3 setup.py
+```
+
+Caso não tenha python na sua maquina, prosiga com as seguintes instruções:
+
+
+instalar as dependências:
 ```
 sudo apt install curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make 
 ```
 
-Dentro do  diretório *project* siga as seguintes instruções:
-
 Crie os diretórios "executable" e "obj":
-
 ```
 mkdir executable/ obj/
 ```
-
 Compile o código usando make:
 ```
 make
@@ -70,6 +74,29 @@ Para rodar a aplicação use o seguite comando, passando para a variável mode a
 make mode=<opção> run
 ```
 Caso nenhum valor seja passado para mode será utilizada a opção command-line.
+
+### Trouble shoting
+
+Pode ser que a biblioteca curl.h seja instalada no diretório errado fazendo com que não seja encontrada pelo compilador. 
+
+Para resolver esse problema, siga as seguintes instruções.
+
+Vá para o diretório de include files:
+```
+cd /usr/include
+```
+Copie o diretório da biblioteca curl para o diretório atual:
+
+```
+cp -r x86_64-linux-gnu/curl .
+```
+
+Volte para o diretório do projeto rode e verifique se o erro persiste:
+```
+make run
+```
+
+Caso isso não funcione basta remover do makefile todos os arquivos que utilizam o header curl/curl.h. A aplicação também funciona independente desse header.
 
 ### Autores
 

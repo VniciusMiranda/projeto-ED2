@@ -30,7 +30,6 @@ $(EXECUTABLE): $(OBJ)
 
 .PHONY: clean
 
-# make gives an error at the end for some reason
 run:
 ifndef $(mode)
 	./$(EXECUTABLE) run-cl
