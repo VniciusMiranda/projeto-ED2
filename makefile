@@ -32,7 +32,11 @@ $(EXECUTABLE): $(OBJ)
 
 # make gives an error at the end for some reason
 run:
-	./$(EXECUTABLE)
+ifndef $(mode)
+	./$(EXECUTABLE) run-cl
+else	
+	./$(EXECUTABLE) $(mode) 
+endif
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~  

@@ -65,10 +65,11 @@ Compile o código usando make:
 make
 ```
 
-Agora rode o executável:
+Para rodar a aplicação use o seguite comando, passando para a variável mode a opção de qual interface será utilizada, command-line ou interface gráfica:
 ```
-./executable/project-organizer
+make mode=<opção> run
 ```
+Caso nenhum valor seja passado para mode será utilizada a opção command-line.
 
 ### Autores
 
