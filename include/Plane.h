@@ -26,6 +26,7 @@ typedef enum plane_model {
 } plane_model_t;
 
 typedef struct plane {
+    bool deleted;
     unsigned long int id;
     plane_model_t model;
     AirlineCompany_t airlineCompany;
@@ -44,19 +45,35 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold);
 
 bool find_plane_by_model(void* d, void* cmp);
 
+bool find_plane_by_company(void* d, void* cmp);
+
+bool find_plane_by_id(void* d, void* cmp);
+
+bool find_plane_by_capacity(void* d, void* cmp);
+
+bool all_planes(void* d, void* cmp);
+
+/* sorting attr functions */
+
+int get_plane_id(void* d);
+
+int get_plane_model(void* d);
+
+int get_plane_capacity(void* d);
+
+int get_plane_company(void* d);
+
 /* data persitance functions */
 
 int write_plane(Plane_t* ap);
 
-Plane_t* read_plane(unsigned long int id);
+Planes_t read_plane(bool(find_func)(void*, void*), void* cmp);
 
 Planes_t read_all_planes();
 
-Planes_t search_plane(bool(find_func)(void*, void*), void* cmp);
-
 int delete_plane(bool(find_func)(void*, void*), void* cmp);
 
-int update_plane(Plane_t* new_ap, unsigned long int id);
+int update_plane(Plane_t* new_pl, bool(*find_func)(void*, void*), void* cmp);
 
 int init_planes_table();
 
