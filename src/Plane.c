@@ -5,37 +5,37 @@ int get_name_model(plane_model_t model, char* dest) {
 
     switch(model) {
         case Airbus_A320:
-            getName(Airbus_A320, dest);
+            strcpy(dest, "Airbus_A320");
             break;
         case Boeing_737:
-            getName(Boeing_737, dest);
+           strcpy(dest, "Boeing_737");
             break;
         case DC_9MD_80:
-            getName(DC_9MD_80, dest);
+            strcpy(dest, "DC_9MD_80");
             break;
         case Boeing_777:
-            getName(Boeing_777, dest);
+            strcpy( dest, "Boeing_777");
             break;
         case Bombardier_CRJ_Series:
-            getName(Bombardier_CRJ_Series, dest);
+            strcpy(dest,"Bombardier_CRJ_Series");
             break;
         case Embraer_E_Jets:
-            getName(Embraer_E_Jets, dest);
+            strcpy(dest,"Embraer_E_Jets");
             break;
         case Boeing_727:
-            getName(Boeing_727, dest);
+            strcpy(dest,"Boeing_727");
 
         case Airbus_A330:
-            getName(Airbus_A330, dest);
+            strcpy(dest, "Airbus_A330");
             break;
         case Boeing_747:
-            getName(Boeing_747, dest);
+            strcpy(dest,"Boeing_747" );
             break;
         case Boeing_787:
-            getName(Boeing_747, dest);
+            strcpy(dest,"Boeing_747");
             break;
         default:
-            getName(NULL, dest);
+            strcpy(dest,"NULL");
     }
 
     return OK;
