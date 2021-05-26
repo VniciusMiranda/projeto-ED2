@@ -1,13 +1,55 @@
 #include "Plane.h"
 
+int get_name_model(plane_model_t model, char* dest) {
 
-Plane_t* create_plane(char* model, int capacity, AirlineCompany_t airline_company){
-    if(is_null_ptr(model) || capacity < 1) return NULL;
+
+    switch(model) {
+        case Airbus_A320:
+            getName(Airbus_A320, dest);
+            break;
+        case Boeing_737:
+            getName(Boeing_737, dest);
+            break;
+        case DC_9MD_80:
+            getName(DC_9MD_80, dest);
+            break;
+        case Boeing_777:
+            getName(Boeing_777, dest);
+            break;
+        case Bombardier_CRJ_Series:
+            getName(Bombardier_CRJ_Series, dest);
+            break;
+        case Embraer_E_Jets:
+            getName(Embraer_E_Jets, dest);
+            break;
+        case Boeing_727:
+            getName(Boeing_727, dest);
+
+        case Airbus_A330:
+            getName(Airbus_A330, dest);
+            break;
+        case Boeing_747:
+            getName(Boeing_747, dest);
+            break;
+        case Boeing_787:
+            getName(Boeing_747, dest);
+            break;
+        default:
+            getName(NULL, dest);
+    }
+
+    return OK;
+}
+
+
+Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_model_t model){
+    if( capacity < 1) return NULL;
 
     Plane_t* new_plane = (Plane_t*) malloc(sizeof(Plane_t));
     if(is_null_ptr(new_plane)) return NULL;
 
-    strcpy(new_plane->model, model);
+
+    new_plane->model = model;
     new_plane->capacity = capacity;
     new_plane->id = ++LAST_VALID_ID_PLANE;
 
@@ -25,11 +67,15 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
     Plane_t* pl = (Plane_t*) d;
 
     set_color(f, color, is_bold);
-    print_line(LOG_FILE, 0, 0);
-    fprintf(LOG_FILE, "id: %ld\n", pl->id);
-    fprintf(LOG_FILE, "modelo: %s\n", pl->model);
-    fprintf(LOG_FILE, "companhia aerea: %s\n", pl->airlineCompany.name);
-    fprintf(LOG_FILE, "capacidade: %s\n", pl->capacity);
+    print_line(f, 0, 0);
+
+    char model[TEXT_MAX];
+    get_name_model(pl->model, model);
+
+    fprintf(f, "id: %ld\n", pl->id);
+    fprintf(f, "modelo: %s\n", model);
+    fprintf(f, "companhia aerea: %s\n", pl->airlineCompany.name);
+    fprintf(f, "capacidade: %d\n", pl->capacity);
 
     reset_color(f);
 }
