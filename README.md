@@ -16,12 +16,12 @@ A estrutura e organização do projeto será a seguinte:
 * Para cada estrutura será implementado diversas funcionalidades como inserção, remoção, visualização e ordenação dos dados.
 * A ordenação dos dados será feita de forma interna e externa utilizando variados tipos de métodos de ordenação dependendo de cada caso.
 * Os dados serão guardados em arquivos e será implementado funcionalidades de um banco de dados.
+* O projeto será organizado através do MakeFile. 
 * Será utilizado grafos para cálculo de rotas.
 * Para dados sobre o clima, o usuário irá inserir no algoritmo ou poderá ser inserido dinamicamente através de uma API.
 * A interface gráfica do programa será construída com ncurses.
-* O projeto será organizado através do MakeFile. 
 
-OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e poderá ou não ser implementado.
+OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e poderá ou não ser implementado. Essas funcionalidades serao implementadas na versao 2.0.0
 
 #### Principais funcionalidades para o usuário
 
