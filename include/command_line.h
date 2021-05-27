@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "airport_menu.h"
+#include "plane_menu.h"
 typedef enum main_menu_option {
     AIRPORT_MENU = 1, 
     PLANES_MENU, 

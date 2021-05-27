@@ -4,24 +4,6 @@
 #include "utils.h"
 #include "Plane.h"
 
-char* plane_menu_options[] = {
-    "inserir novo aviao",
-    "deletar aviao",
-    "atualizar aviao",
-    "ver avioes",
-    "sair do menu",
-    "sair da aplicacao"
-};
-int plane_menu_options_size = ARRAY_SIZE(plane_menu_options);
-
-char* plane_fields_options[] = {
-    "id",
-    "model",
-    "company",
-    "capacity",
-};
-int plane_fields_options_size = ARRAY_SIZE(plane_fields_options);
-
 Plane_t* get_plane_from_user(FILE* f);
 
 get_attr_func get_plane_field(FILE* f);

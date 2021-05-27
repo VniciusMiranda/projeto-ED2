@@ -40,6 +40,7 @@ int run_command_line(FILE* f) {
                 run_airport_menu(f, &bye);
                 break;
             case PLANES_MENU: 
+                run_plane_menu(f, &bye);
                 fprintf(f, "planes\n");
                 break;
             case EXIT_APP:

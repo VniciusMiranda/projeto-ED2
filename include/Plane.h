@@ -5,6 +5,7 @@
 #include "AirlineCompany.h"
 #include "Database.h"
 #include "log.h"
+#include "utils.h"
 
 #define PLANE_MODEL_MAX 32
 

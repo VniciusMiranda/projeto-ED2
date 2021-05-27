@@ -1,5 +1,23 @@
   #include "plane_menu.h"
 
+char* plane_menu_options[] = {
+    "inserir novo aviao",
+    "deletar aviao",
+    "atualizar aviao",
+    "ver avioes",
+    "sair do menu",
+    "sair da aplicacao"
+};
+int plane_menu_options_size = ARRAY_SIZE(plane_menu_options);
+
+char* plane_fields_options[] = {
+    "id",
+    "model",
+    "company",
+    "capacity",
+};
+int plane_fields_options_size = ARRAY_SIZE(plane_fields_options);
+
 Plane_t* get_plane_from_user(FILE* f) {
     char model[PLANE_MODEL_MAX];
     int capacidade;
@@ -11,9 +29,9 @@ Plane_t* get_plane_from_user(FILE* f) {
     scanf ("%[^\n]%*c", model);
 
     fprintf(f, "capacidade do avião:");
-    scanf ("%[^\n]%*d", capacidade);
+    scanf ("%d", &capacidade);
 
-    Plane_t* plane = create_plane(model, capacidade, AirlineCompany);
+    Plane_t* plane = create_plane(capacidade, AirlineCompany, (plane_model_t)model);
 
     if(!plane) return NULL;
 
@@ -56,7 +74,7 @@ search_func get_plane_filter(FILE* f, void** field_value) {
     reset_color(f);
 
     print_menu_options(f, BLUE, plane_fields_options, plane_fields_options_size);
-    int selected_option = get_selected_option(f, BLUE, PLANE_MODEL_MAX, plane_fields_options_size);
+    int selected_option = get_selected_option(f, BLUE, plane_fields_options, plane_fields_options_size);
     clear_input_buffer();
 
     switch(selected_option) {
@@ -106,10 +124,11 @@ search_func get_plane_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "capacidade:");
-            scanf ("%[^\n]%*d", capacity);
+            scanf ("%d", &capacity);
             reset_color(f);
 
-            *field_value = (void*) capacity; 
+            *field_value = (void*) &capacity; 
+
             return find_plane_by_capacity;
 
         default:
@@ -231,7 +250,7 @@ int _select_plane(FILE* f) {
         void* field;
         bool (*search_func)(void*, void*) = get_plane_filter(f, &field);
 
-        planes = read_planes(search_func, field);
+        planes = read_plane(search_func, field);
     }
 
 

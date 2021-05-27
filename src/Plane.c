@@ -60,7 +60,7 @@ Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_mode
 int dealloc_pl(void* pl_ptr) {
     if(is_null_ptr(pl_ptr)){
         log_error("dealloc_pl(): Null pointer!");
-        return NULL;
+        return ERR;
     }
     free(pl_ptr);
     return OK;  
@@ -271,7 +271,7 @@ int update_plane(Plane_t* new_pl, bool(*find_func)(void*, void*), void* cmp) {
 
         fread(pl, sizeof(Plane_t), 1, f);
         if(feof(f)) {
-            dealloc_plane(pl);
+            dealloc_pl(pl);
             break;
         }
 
