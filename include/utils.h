@@ -26,6 +26,8 @@ typedef struct int_array {
     int size;
 } int_array_t;
 
+typedef char* id_array_t;
+
 /* get the name of a variable */
 #define getName(var, str) sprintf(str, "%s", #var) 
 
@@ -73,5 +75,14 @@ int print_warning(FILE* f, char* message);
 int clear_input_buffer();
 
 void trim_trailing_empty_space(char* str);
+
+bool error_in(int status);
+
+int print_int_array(FILE* f, int_array_t a);
+
+void long_int_to_str(long int i, char* dest);
+
+void id_array_to_long_int_arr(char* arr, int size, long int dest[]);
+
 
 #endif

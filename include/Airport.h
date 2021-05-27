@@ -49,6 +49,7 @@ int dealloc_airport(void* ap_ptr);
 void print_airport(FILE* f, void* d, color_t color, bool is_bold);
 
 int insert_connection(Airport_t* ap,unsigned long int conn_id);
+
 int insert_plane(Airport_t* ap,unsigned long int plane_id);
 
 Connections_t get_connections(Airport_t* ap);

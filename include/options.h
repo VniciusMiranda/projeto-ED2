@@ -6,11 +6,11 @@
 #include "command_line.h"
 
 
-void runUi(); 
-void runCl(); 
+void runUi(FILE* f); 
+void runCl(FILE* f); 
 
-int handle_options(int numb_opts, char* opts[]);
-void print_options(); 
+int handle_options(FILE* f, int numb_opts, char* opts[]);
+void print_options(FILE* f ); 
 
 
 #endif

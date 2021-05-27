@@ -1,5 +1,7 @@
 #include "WeatherCondition.h"
 
+
+// TODO: parse the response from the request on this function
 WeatherCondition_t filterWeatherCondition(char* content) {
     return 0;
 }

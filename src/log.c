@@ -1,9 +1,6 @@
 #include "log.h"
 
 
-bool ENABLE_COLOR;
-
-
 int init_log(bool enable_color, bool use_log_file) {
     ENABLE_COLOR = enable_color;
 

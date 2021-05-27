@@ -262,7 +262,7 @@ element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*), int
  
     // Similar to "for (int j = l; j <= h- 1; j++)"
     for (element_t* j = l; j != h; j = j->next) {
-        if(option == DESCENDING) {
+        if(option == ASCENDING) {
             if (get_attr_func(j->data) <= x) {
                 // Similar to i++ for array
                 i = (i == NULL)? l : i->next;

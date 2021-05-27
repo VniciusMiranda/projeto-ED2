@@ -45,7 +45,30 @@ int dealloc_airport(void* ap_ptr){
 
 int insert_connection(Airport_t* ap, unsigned long int conn_id) {
     if(!ap) return ERR;
+
+    Airports_t result = read_airport(find_airport_by_id, &conn_id);
+    if(is_null_ptr(result)) {
+        log_error("insert_connection(): read_airport returned NULL.");
+        return ERR;
+    }
+
+    if(is_empty_list(result)) {
+        log_error("insert_connection(): read_airport returned an empty list.");
+        return ERR;
+    }
+
+    if(result->length > 1) {
+        log_error("insert_connection(): read_airport returned an more than 1 value.");
+        return ERR;
+    }
+
     ap->connections_id[ap->num_connections++] = conn_id;
+    if(insert_element(ap->connections, result->head->data) == ERR) {
+        log_error("insert_connection(): error while inserting element.");
+        return ERR;
+    }
+
+    return OK;
 }
 int insert_plane(Airport_t* ap, unsigned long int plane_id){
     if(!ap) return ERR;
@@ -121,6 +144,7 @@ int delete_airport(bool(find_func)(void*, void*), void* cmp) {
 }
 
 Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
+    log_info("read_airport(): init.");
     char table_path[PATH_MAX]; 
     get_airport_table_path(table_path);
 
@@ -141,8 +165,28 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
             dealloc_airport(air);
             break;
         }
-        air->connections = NULL;
-        air->planes = NULL;
+
+        int_array_t connections_ids;
+
+        connections_ids.array = air->connections_id;
+        connections_ids.size = air->num_connections;
+        log_info("printing array of ids");
+        print_int_array(f, connections_ids);
+        log_info("array printed");
+        if(connections_ids.size != 0) {
+            sprintf(LOG,"read_airport(): reading %d connections.", connections_ids.size);
+            log_info(LOG);
+            air->connections = read_airport(find_airport_by_ids, &connections_ids);
+            if(is_null_ptr(air->connections)) {
+                log_error("read_airport(): error while reading connections.");
+                return NULL;
+            }
+            log_info("read_airport(): finish reading connections.");
+        }
+        else 
+            air->connections = create_list();
+        
+        air->planes = create_list();
 
         if(air->deleted) {
             dealloc_airport(air);
@@ -150,8 +194,9 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
         }
 
         if(find_func(air, cmp))
-            if(insert_element(airports, air) == ERR)
-                log_error("error while reading airports");
+            if(insert_element(airports, air) == ERR){
+                log_warning("read_airport(): error while adding airports.");
+            }
     }
 
     fclose(f);
@@ -218,6 +263,17 @@ void print_airport(FILE* f, void* d, color_t color, bool is_bold) {
         fprintf(f, "cidade: %s\n", ap->location.city);
         fprintf(f, "país: %s\n", ap->location.country);
         fprintf(f, "weather condition: %s\n", wc);
+        fprintf(f, "numero de conexoes: %d\n", ap->num_connections);
+        fprintf(f, "ids das conexoes: ");
+        for(int i = 0; i < ap->num_connections; i++)
+            fprintf(f, "%ld ", ap->connections_id[i]);
+        fprintf(f, "\n");
+
+        fprintf(f, "numero de avioes: %d\n", ap->num_planes);
+        fprintf(f, "ids dos avioes: ");
+        for(int i = 0; i < ap->num_planes; i++)
+            fprintf(f, "%ld ", ap->planes_id[i]);
+        fprintf(f, "\n");
     }
 
     reset_color(f);

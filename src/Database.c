@@ -29,6 +29,15 @@ int init_database(FILE* f) {
     init_database_tables();
 }
 
+int clean_database() {
+
+}
+
+
+int clean_database_tables() {
+
+}
+
 int init_database_tables() {
     log_info("processing tables.");
     for(int i = 0; i < NUMB_DATABASE_TABLES; i++) {

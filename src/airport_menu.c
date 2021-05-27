@@ -8,8 +8,9 @@ char* airport_menu_options[] = {
     "ver aeroportos",
     "inserir nova conexao",
     "inserir novo aviao",
+    "ver conexoes de um aeroporto",
     "sair do menu",
-    "sair da aplicacao"
+    "sair da aplicacao",
 };
 int airport_menu_options_size = ARRAY_SIZE(airport_menu_options);
 
@@ -259,6 +260,7 @@ int _update_airport(FILE* f) {
 }
 
 int _select_airport(FILE* f) {
+    log_info("_select_airport(): init select_airport.");
     clear_input_buffer();
     
     set_color(f, YELLOW, true);
@@ -273,15 +275,19 @@ int _select_airport(FILE* f) {
     clear_input_buffer();
 
     Airports_t airports;
-    if(option == 'n' || option == 'N') 
+    if(option == 'n' || option == 'N')
         airports = read_airport(all_airports, NULL);
+        
     else {
         void* field;
         bool (*search_func)(void*, void*) = get_airport_filter(f, &field);
-
         airports = read_airport(search_func, field);
     }
 
+    if(is_null_ptr(airports)) {
+            log_error("_select_airport(): error while reading airports.");
+            return ERR;
+    }
 
     set_color(f, WHITE, true);
     fprintf(f, "deseja ordenar a lista?(y/n)\n");
@@ -289,21 +295,20 @@ int _select_airport(FILE* f) {
     reset_color(f);
     clear_input_buffer();
 
-    int order;
-    set_color(f, WHITE, true);
-    fprintf(f, "qual a ordem que sera usada?(1 para ascendente / 0 para descendente)\n");
-    scanf("%d", &order);
-    reset_color(f);
-    clear_input_buffer();
-
-
     if(option == 'y' || option == 'Y') {
+
+        int order;
+        set_color(f, WHITE, true);
+        fprintf(f, "qual a ordem que sera usada?(1 para ascendente / 0 para descendente)\n");
+        scanf("%d", &order);
+        reset_color(f);
+        clear_input_buffer();
+
         set_color(f, WHITE, true);
         fprintf(f, "Por qual campo voce deseja ordenar?\n");
         reset_color(f);
 
         int (*get_attr_func)(void*) = get_airport_field(f);
-
         sort_list(airports, get_attr_func, order);
     } 
 
@@ -321,7 +326,84 @@ int _select_airport(FILE* f) {
     if(print_list(f, airports, print_airport, YELLOW, true) == ERR) 
         return ERR;
 
-    return destroy_list(airports, dealloc_airport);
+    log_info("_select_airport(): dealocating memory...");
+    int status = destroy_list(airports, dealloc_airport);
+    if(!error_in(status))
+        log_info("_select_airport(): memory dealocated.");
+    else
+        log_info("_select_airport(): failed when dealocating memory.");
+
+    return status;
+}
+
+int _insert_connection(FILE* f) {
+    log_info("_insert_connection(): init insert.");
+    clear_input_buffer();
+    set_color(f, WHITE, true);
+
+    fprintf(f, "Digite o ID do aeroporto onde adicionar a nova conexao:");
+    unsigned long int airport_id;
+    scanf("%ld", &airport_id);
+    clear_input_buffer();
+
+    log_info("reading airports...");
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id);
+    if(!airports || airports->length > 1 || is_empty_list(airports)){
+        log_error("_insert_connection(): error when trying to read airports.");
+        return ERR;
+    }
+    log_info("finish reading airports.");
+
+    Airport_t* ap = (Airport_t*) airports->head->data;
+
+    fprintf(f, "Digite o ID do aeroporto a ser adicionado como conexao:");
+    unsigned long int connection_id;
+    scanf("%ld", &connection_id);
+
+    log_info("inserting connection...");
+    if(insert_connection(ap, connection_id) == ERR){
+        log_error("_insert_connection(): error while inserting connection.");
+        return ERR;
+    }
+    log_info("connections inserted.");
+
+
+    log_info("updating table airport");
+    if(error_in(update_airport(ap, find_airport_by_id, &ap->id))) {
+        log_error("_insert_connection(): error while updating airport.");
+    }
+
+    reset_color(f);
+    log_info("cleaning memory...");
+    int status = destroy_list(airports, dealloc_airport);
+    log_info("memory cleaned.");
+    return status;
+}
+
+
+int _select_connections(FILE* f) {
+    log_info("_select_connections(): init.");
+
+    fprintf(f, "Digite o ID do aeroporto:");
+    unsigned long int airport_id;
+    scanf("%ld", &airport_id);
+    clear_input_buffer();
+
+    log_info("reading airports...");
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id);
+    if(!airports || airports->length > 1 || is_empty_list(airports)){
+        log_error("_insert_connection(): error when trying to read airports.");
+        return ERR;
+    }
+    log_info("finish reading airports.");
+
+    Airport_t* ap = (Airport_t*) airports->head->data;
+
+    return print_list(f, ap->connections, print_airport, YELLOW, true);
+}
+
+int _insert_plane(FILE* f) {
+
 }
 
 
@@ -339,41 +421,50 @@ int run_airport_menu(FILE* f, bool* exit) {
 
         switch(selected_option) {
             case _INSERT:
-                _insert_airport(f) == ERR ? 
+                error_in(_insert_airport(f)) ? 
                     print_error(f, "nao foi possivel inserir o aeroporto.") :
                     print_success(f, "aeroporto inserido com sucesso!");
 
                 break;
 
             case _DELETE:
-                _delete_airport(f) == ERR ?
+                error_in(_delete_airport(f)) ?
                     print_error(f, "nao foi possivel deletar o aeroporto.") :
                     print_success(f, "aeroporto deletado com sucesso!");
                 break;
 
             case _UPDATE:
-                _update_airport(f) == ERR ?
+                error_in(_update_airport(f)) ?
                     print_error(f, "nao foi possivel atualizar o aeroporto.") :
                     print_success(f, "aeroporto atualizado com sucesso!");
                 break;
 
             case _SELECT: 
-                _select_airport(f) == ERR ?
+                error_in(_select_airport(f)) ?
                     print_error(f, "nao foi possivel ver aeroportos.") :
                     print_success(f, "aeroportos encontrados com sucesso!");
                 break;
 
-            case 5:
-                // inserir conexao
-                break;
-            case 6:
-                // inserir aviao
-                break;
-            case 7:
-                bye = true;
+            case 5:// inserir conexao
+                error_in(_insert_connection(f)) ?
+                    print_error(f, "nao foi possivel ver aeroportos.") :
+                    print_success(f, "aeroportos encontrados com sucesso!");
                 break;
 
+            case 6: // inserir aviao
+                error_in(_insert_plane(f)) ?
+                    print_error(f, "nao foi possivel ver aeroportos.") :
+                    print_success(f, "aeroportos encontrados com sucesso!");
+                break;
+
+            case 7:
+                error_in(_select_connections(f)) ?
+                    print_error(f, "nao foi possivel ver aeroportos.") :
+                    print_success(f, "aeroportos encontrados com sucesso!");
             case 8:
+                bye = true;
+                break;
+            case 9:
                 *exit = true;
                 bye = true;
                 break;

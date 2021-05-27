@@ -31,11 +31,8 @@ $(EXECUTABLE): $(OBJ)
 .PHONY: clean
 
 run:
-ifndef $(mode)
 	./$(EXECUTABLE) run-cl
-else	
-	./$(EXECUTABLE) $(mode) 
-endif
+
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~  

@@ -2,7 +2,6 @@
 
 int get_name_model(plane_model_t model, char* dest) {
 
-
     switch(model) {
         case Airbus_A320:
             strcpy(dest, "Airbus_A320");
