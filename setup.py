@@ -37,13 +37,13 @@ def main(args):
     os.system(f"sudo apt install -y {dependencies}")
     print_log("dependencies installed!")
 
-    print_log("compilling project...")
-    os.system("make")
-    print_log("finished compilation process.");
-
     print_log("creating directories: executable/ obj/");
     os.system("mkdir executable/ obj/")
     print_log("directories created!")
+
+    print_log("compilling project...")
+    os.system("make")
+    print_log("finished compilation process.");
 
     print_with_color("-"*80)
     print_log("setup finished. Run the command 'make run' to use the application.")
