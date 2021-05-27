@@ -8,12 +8,6 @@ char* main_menu_options[] = {
 };
 int main_menu_options_size = ARRAY_SIZE(main_menu_options);
 
-
-
-int print_welcome_message(FILE* f, color_t color) {
-    char title[] = "Airline-Management";
-}
-
 int print_goodbye(FILE* f, color_t color) {
     set_color(f, color, true);
     print_line(f, 80, 0);
@@ -26,7 +20,6 @@ int run_command_line(FILE* f) {
     int selected_option;
     bool bye = false;
 
-    print_welcome_message(f, BLUE);
     char title[] = "Airline-Management - Menu Principal";
     
     while(!bye) {

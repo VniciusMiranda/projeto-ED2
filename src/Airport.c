@@ -29,16 +29,31 @@ Airport_t* create_airport(char* name, char* code, Location_t* loc) {
 
 int dealloc_airport(void* ap_ptr){
     if(is_null_ptr(ap_ptr)) return ERR;
+    log_info("dealloc_airport(): init.");
 
     Airport_t* ap = (Airport_t*) ap_ptr; 
-    if(!is_empty_list(ap->planes))
-        destroy_list(ap->planes, dealloc_pl);
+
+    if(!is_empty_list(ap->planes)) {
+        log_info("dealocating planes...");
+        if(error_in(destroy_list(ap->planes, dealloc_pl))) {
+            log_error("error while deallocating planes.");
+            return ERR;
+        }
+        log_info("planes deallocated.");
+
+    }
     
-    if(!is_empty_list(ap->connections))
-        destroy_list(ap->connections, dealloc_airport);
+    if(!is_empty_list(ap->connections)) {
+        if(error_in(destroy_list(ap->connections, dealloc_airport))) {
+            log_error("error while deallocating connections.");
+            return ERR;
+        }
+        log_info("connections deallocated.");
+    }
 
     free(ap);
 
+    log_info("dealloc_airport(): finish.");
     return OK;
 }
 
@@ -102,6 +117,7 @@ int write_airport(Airport_t* ap) {
 
 int delete_airport(bool(find_func)(void*, void*), void* cmp) {
     if(!find_func) return ERR;
+    log_info("delete_airport(): init.");
 
     char table_path[PATH_MAX];
     get_airport_table_path(table_path);
@@ -120,20 +136,25 @@ int delete_airport(bool(find_func)(void*, void*), void* cmp) {
 
         if(!f) return ERR;
 
+        log_info("reading value from database.");
         fread(ap, sizeof(Airport_t), 1, f);
         if(feof(f)) {
+            log_info("found end of file.");
             dealloc_airport(ap);
             break;
         }
 
         if(find_func(ap, cmp)) {
+            log_info("found aiport to delete.");
             found_match = true;
             fseek(f, -((int)sizeof(Airport_t)), SEEK_CUR);
             pos = ftell(f);
             fclose(f);
             ap->deleted = true;
+            log_info("opening to write new value.");
             f = fopen(table_path, "wb");
             fseek(f, pos, SEEK_CUR);
+            log_info("writing new value.");
             fwrite(ap, sizeof(Airport_t), 1, f);
             pos = ftell(f);
             fclose(f);
@@ -165,27 +186,23 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
             dealloc_airport(air);
             break;
         }
+        /*
+            the use of connections are related to features that will be implemented
+            on the major version 2.0.0
+        */
+        // if(connections_ids.size != 0) {
+        //     sprintf(LOG,"read_airport(): reading %d connections.", connections_ids.size);
+        //     log_info(LOG);
+        //     air->connections = read_airport(find_airport_by_ids, &connections_ids);
+        //     if(is_null_ptr(air->connections)) {
+        //         log_error("read_airport(): error while reading connections.");
+        //         return NULL;
+        //     }
+        //     log_info("read_airport(): finish reading connections.");
+        // }
+        // else 
 
-        int_array_t connections_ids;
-
-        connections_ids.array = air->connections_id;
-        connections_ids.size = air->num_connections;
-        log_info("printing array of ids");
-        print_int_array(f, connections_ids);
-        log_info("array printed");
-        if(connections_ids.size != 0) {
-            sprintf(LOG,"read_airport(): reading %d connections.", connections_ids.size);
-            log_info(LOG);
-            air->connections = read_airport(find_airport_by_ids, &connections_ids);
-            if(is_null_ptr(air->connections)) {
-                log_error("read_airport(): error while reading connections.");
-                return NULL;
-            }
-            log_info("read_airport(): finish reading connections.");
-        }
-        else 
-            air->connections = create_list();
-        
+        air->connections = create_list();
         air->planes = create_list();
 
         if(air->deleted) {
@@ -193,10 +210,11 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
             continue;
         }
 
-        if(find_func(air, cmp))
+        if(find_func(air, cmp)) {
             if(insert_element(airports, air) == ERR){
                 log_warning("read_airport(): error while adding airports.");
             }
+        }
     }
 
     fclose(f);
@@ -363,14 +381,6 @@ bool all_airports(void* d, void* cmp) {
     return true;
 }
 
-
-int get_first_letter_upper_case_int_repr(char* str) {
-    int first_letter = (int) str[0]; 
-    if(first_letter >= 97) {
-        first_letter -= 32;
-    }
-    return first_letter;
-}
 
 int get_airport_id(void* d) {
     Airport_t* ap = (Airport_t*) d;

@@ -297,5 +297,11 @@ void long_int_to_str(long int i, char* dest) {
     sprintf(dest, "%ld", i);
 }
 
-
+int get_first_letter_upper_case_int_repr(char* str) {
+    int first_letter = (int) str[0]; 
+    if(first_letter >= 97) {
+        first_letter -= 32;
+    }
+    return first_letter;
+}
 

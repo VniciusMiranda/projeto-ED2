@@ -84,5 +84,6 @@ void long_int_to_str(long int i, char* dest);
 
 void id_array_to_long_int_arr(char* arr, int size, long int dest[]);
 
+int get_first_letter_upper_case_int_repr(char* str);
 
 #endif

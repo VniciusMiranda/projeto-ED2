@@ -34,6 +34,7 @@ def main(args):
     print_log("compilling project...")
     os.system("make")
 
+
     print_log("setup finished. Run the command 'make run' to use the application.")
 
 if __name__ == "__main__":

@@ -4,12 +4,10 @@
 int init_log(bool enable_color, bool use_log_file) {
     ENABLE_COLOR = enable_color;
 
-    if(!use_log_file) {
-        CUSTOM_LOG_FILE = false;
+    if(!use_log_file) 
         LOG_FILE = stdout;
-    }
+
     else {
-        CUSTOM_LOG_FILE = true;
         set_log_file("airline-management.log");
         LOG_FILE = fopen(LOG_FILE_NAME, "w");
         if(is_null_ptr(LOG_FILE)) {
@@ -26,10 +24,8 @@ int set_log_file(char* file_name) {
     return OK;
 }
 
-// don't know wtf is this
 void clean_log() {
-    if(CUSTOM_LOG_FILE)
-        fclose(LOG_FILE);
+    fclose(LOG_FILE);
 }
 
 int log_info(char* str) {
@@ -44,8 +40,7 @@ int log_info(char* str) {
 
     fprintf(LOG_FILE, "\n");
     
-    if(CUSTOM_LOG_FILE)
-        fflush(LOG_FILE);
+    fflush(LOG_FILE);
     return OK;
 }
 
@@ -60,8 +55,7 @@ int log_error(char* str) {
     ENABLE_COLOR ? reset_color(LOG_FILE) : NULL;
     fprintf(LOG_FILE, "\n");
 
-    if(CUSTOM_LOG_FILE)
-        fflush(LOG_FILE);
+    fflush(LOG_FILE);
     return OK;
 }
 
@@ -77,8 +71,7 @@ int log_warning( char* str) {
 
     fprintf(LOG_FILE, "\n");
 
-    if(CUSTOM_LOG_FILE)
-        fflush(LOG_FILE);
+    fflush(LOG_FILE);
     return OK;
 }
 

@@ -67,7 +67,6 @@ int init() {
 
 int clean() {
     clean_database();
-    clean_log();
 }
 
 
