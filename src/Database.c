@@ -28,7 +28,9 @@ int init_database(FILE* f) {
 
     init_database_tables();
 }
-
+/*
+    Will be implemented on version 2.0.0
+*/
 int clean_database() {
 
 }

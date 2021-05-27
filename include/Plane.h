@@ -81,7 +81,7 @@ int update_plane(Plane_t* new_pl, bool(*find_func)(void*, void*), void* cmp);
 
 int init_planes_table();
 
-long int resolve_planes_id();
+long int resolve_plane_id();
 
 int get_plane_table_path(char* dest);
 

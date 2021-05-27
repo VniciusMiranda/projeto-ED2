@@ -303,7 +303,7 @@ int run_plane_menu(FILE* f, bool* exit) {
     char title[] = "Menu Aviao";
 
     while(!bye) {
-        print_title(f, YELLOW, title, '-', strlen(title));
+        print_title(f, CYAN, title, '-', strlen(title));
         
         print_menu_options(f, BLUE, plane_menu_options, plane_menu_options_size);
         selected_option = get_selected_option(f, BLUE, plane_menu_options, plane_menu_options_size);
@@ -335,16 +335,10 @@ int run_plane_menu(FILE* f, bool* exit) {
                 break;
 
             case 5:
-                // inserir conexao
-                break;
-            case 6:
-                // inserir aviao
-                break;
-            case 7:
                 bye = true;
                 break;
 
-            case 8:
+            case 6:
                 *exit = true;
                 bye = true;
                 break;

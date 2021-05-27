@@ -33,8 +33,8 @@ int run_command_line(FILE* f) {
                 run_airport_menu(f, &bye);
                 break;
             case PLANES_MENU: 
+                print_warning(f, "menu dos avioes esta com varios bugs :/");
                 run_plane_menu(f, &bye);
-                fprintf(f, "planes\n");
                 break;
             case EXIT_APP:
                 bye = true;

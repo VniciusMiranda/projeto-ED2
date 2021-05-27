@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "Airport.h"
+#include "Plane.h"
 
 int resolve_table_ids();
 #endif

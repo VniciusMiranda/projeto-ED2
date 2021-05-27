@@ -402,8 +402,9 @@ int _select_connections(FILE* f) {
     return print_list(f, ap->connections, print_airport, YELLOW, true);
 }
 
-int _insert_plane(FILE* f) {
-
+int _insert_plane_on_airport(FILE* f) {
+    print_error(f, "nao implementado!");
+    return ERR;
 }
 
 
@@ -452,11 +453,10 @@ int run_airport_menu(FILE* f, bool* exit) {
                 break;
 
             case 6: // inserir aviao
-                error_in(_insert_plane(f)) ?
+                error_in(_insert_plane_on_airport(f)) ?
                     print_error(f, "nao foi possivel ver aeroportos.") :
                     print_success(f, "aeroportos encontrados com sucesso!");
                 break;
-
             case 7:
                 error_in(_select_connections(f)) ?
                     print_error(f, "nao foi possivel ver aeroportos.") :

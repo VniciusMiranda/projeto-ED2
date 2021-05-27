@@ -258,44 +258,50 @@ bool error_in(int status) {
     return status == ERR;
 }
 
-int get__id_array_size(id_array_t arr) {
-    char* str = (char*) arr;  
-    int i = 0, size = 0;
-    
-    while(str[i]) {
-        if(str[i] == ',')
-            size++;
-    }
 
-    return size - 2;
-}
+ /*
+    the use of connections are related to features that will be implemented
+    on the major version 2.0.0
+*/
+
+// int get__id_array_size(id_array_t arr) {
+//     char* str = (char*) arr;  
+//     int i = 0, size = 0;
+    
+//     while(str[i]) {
+//         if(str[i] == ',')
+//             size++;
+//     }
+
+//     return size - 2;
+// }
 
 // the sizes of @arr and @dest must be equal
-void id_array_to_long_int_arr(char* arr, int size, long int dest[]) {
-    int id, id_size;
-    int first_idx = -1, second_idx = -1;
+// void id_array_to_long_int_arr(char* arr, int size, long int dest[]) {
+//     int id, id_size;
+//     int first_idx = -1, second_idx = -1;
 
-    for(int j = 0,i = 0; i < size; i++) {
-        if(first_idx != -1 && second_idx != -1) {
-            dest[j++] = (long int) strtol(arr + first_idx, arr + second_idx, 10);
+//     for(int j = 0,i = 0; i < size; i++) {
+//         if(first_idx != -1 && second_idx != -1) {
+//             dest[j++] = (long int) strtol(arr + first_idx, arr + second_idx, 10);
 
-            // reset indexes 
-            first_idx = -1;
-            second_idx = -1;
-        }
+//             // reset indexes 
+//             first_idx = -1;
+//             second_idx = -1;
+//         }
 
-        if(arr[i] == ',')
-            first_idx = i + 1;
+//         if(arr[i] == ',')
+//             first_idx = i + 1;
 
-        if(first_idx != -1 && arr[i] == ',')
-            second_idx = i - 1;
-    }
+//         if(first_idx != -1 && arr[i] == ',')
+//             second_idx = i - 1;
+//     }
 
-}
+// }
 
-void long_int_to_str(long int i, char* dest) {
-    sprintf(dest, "%ld", i);
-}
+// void long_int_to_str(long int i, char* dest) {
+//     sprintf(dest, "%ld", i);
+// }
 
 int get_first_letter_upper_case_int_repr(char* str) {
     int first_letter = (int) str[0]; 
