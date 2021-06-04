@@ -9,7 +9,7 @@
 
 // just for testing 
 
-#define API_KEY ""
+#define API_KEY "f04e7996ba569e4a1fb4b837bdaa1a4d"
 #define API_URL "https://api.openweathermap.org/data/2.5/weather"
 
 /*

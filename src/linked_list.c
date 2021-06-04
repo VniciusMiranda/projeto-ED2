@@ -111,6 +111,7 @@ void* get_element_from(linked_list_t* l,unsigned int index) {
 int remove_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) {
     if(!l) return ERR;
 
+    int matches = 0;
     element_t* e = l->head, *tmp;
     while(e) {
         if(find_func(e->data, cmp)) {
@@ -126,14 +127,15 @@ int remove_element(linked_list_t* l, bool(*find_func)(void*, void*), void* cmp) 
             
             if(tmp->prev != NULL)
                 tmp->prev->next = tmp->next;
-
+            
             free(tmp);
+            matches++;
             break; 
         }
         e = e->next; 
     }
 
-    return ERR;
+    return matches > 0 ? OK : ERR;
 }
 
 
