@@ -7,8 +7,8 @@ char* airport_menu_options[] = {
     "atualizar aeroporto",
     "ver aeroportos",
     "inserir nova conexao",
-    "inserir novo aviao",
     "ver conexoes de um aeroporto",
+    "inserir novo aviao",
     "sair do menu",
     "sair da aplicacao",
 };
@@ -468,16 +468,17 @@ int run_airport_menu(FILE* f, bool* exit) {
                     print_error(f, "nao foi possivel ver aeroportos.") :
                     print_success(f, "aeroportos encontrados com sucesso!");
                 break;
+            case 6:// ver conexoes
+                error_in(_select_connections(f)) ?
+                    print_error(f, "nao foi possivel ver aeroportos.") :
+                    print_success(f, "aeroportos encontrados com sucesso!");
 
-            case 6: // inserir aviao
+            case 7: // inserir aviao
                 error_in(_insert_plane_on_airport(f)) ?
                     print_error(f, "nao foi possivel ver aeroportos.") :
                     print_success(f, "aeroportos encontrados com sucesso!");
                 break;
-            case 7:
-                error_in(_select_connections(f)) ?
-                    print_error(f, "nao foi possivel ver aeroportos.") :
-                    print_success(f, "aeroportos encontrados com sucesso!");
+           
             case 8:
                 bye = true;
                 break;
