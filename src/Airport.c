@@ -397,8 +397,6 @@ bool find_airport_by_code(void* d, void* cmp) {
 bool find_airport_by_id(void* d, void* cmp) {
     Airport_t* ap = (Airport_t*) d;
     long int ID = *((long int*)cmp);
-    sprintf(LOG, "comparing: %ld == %ld", ap->id, ID );
-    log_info(LOG);
     return ap->id == ID;
 }
 
