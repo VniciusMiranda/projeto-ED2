@@ -206,6 +206,8 @@ int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp)
     char table_path[PATH_MAX];
     get_airport_table_path(table_path);
 
+   
+
     Airports_t airports = read_airport(all_airports, NULL, false, false);
     if(is_null_ptr(airports)) return ERR;
 
@@ -213,10 +215,16 @@ int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp)
     if(is_null_ptr(updated_airports)) return ERR;
 
     element_t* aux = airports->head;
+    Airport_t* air_aux;
 
     while(aux) {
         if(find_func(aux->data, cmp)) {
-            new_ap->id = ((Airport_t*) aux->data)->id;
+            air_aux = ((Airport_t*) aux->data);
+            new_ap->id = air_aux->id;
+            copy_airport_connections(new_ap, air_aux);
+
+            update_airport_connections(new_ap);
+
             insert_element(updated_airports, new_ap);
         } 
         else 
@@ -277,7 +285,8 @@ int update_airport_connections(void* _air) {
         return OK;
     }
 
-    airport->connections = create_list();
+    if(!airport->connections) 
+        airport->connections = create_list();
 
     return OK;
 }
@@ -288,7 +297,47 @@ int update_airports_connections(Airports_t airports) {
     return for_each_element(airports, update_airport_connections);
 }
 
-int insert_connection(Airport_t* ap,unsigned long int conn_id);
+
+int delete_connection(Airport_t* ap, unsigned long int connection_id) {
+    log_info("delete_connection(): init.");
+    if(!ap) return ERR;
+
+    if(ap->num_connections <= 0) {
+        log_error("delete_connection(): airport doesn't have any connection.");
+        return ERR;
+    }
+    for(int i = 0; i < ap->num_connections; i++) {
+        if(ap->connections_id[i] == connection_id) {
+
+            // could cause segmentation fault
+            log_info("updating connections_ids array...");
+            for(int j = i; j < ap->num_connections; j++)
+                ap->connections_id[j] = ap->connections_id[j+1];
+            log_info("finished updating connections_ids");
+            break;
+        }
+    } 
+    ap->num_connections--;
+    if(error_in(remove_element(ap->connections, find_airport_by_id, &connection_id))) {
+        log_error("delete_connection(): error while removing element.");
+        sprintf(LOG, "connections pointer: %p", ap->connections);
+        log_error(LOG);
+        return ERR;
+    }
+
+    return OK; 
+}
+
+int copy_airport_connections(Airport_t* dest, Airport_t* src) {
+    if(!dest || !src) return ERR;
+    if(src->num_connections <= 0) return ERR;
+
+    for(int i = 0; i < src->num_connections; i++)
+        dest->connections_id[i] = src->connections_id[i];
+    dest->num_connections = src->num_connections;
+
+    return OK;
+}
 
 Planes_t get_airport_planes(Airport_t* airport);
 
@@ -348,6 +397,8 @@ bool find_airport_by_code(void* d, void* cmp) {
 bool find_airport_by_id(void* d, void* cmp) {
     Airport_t* ap = (Airport_t*) d;
     long int ID = *((long int*)cmp);
+    sprintf(LOG, "comparing: %ld == %ld", ap->id, ID );
+    log_info(LOG);
     return ap->id == ID;
 }
 

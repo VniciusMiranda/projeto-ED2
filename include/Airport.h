@@ -55,6 +55,12 @@ int update_airports_connections(Airports_t airports);
 
 int insert_connection(Airport_t* ap,unsigned long int conn_id);
 
+int delete_connection(Airport_t* ap,unsigned long int connection_id);
+
+int copy_airport_connections(Airport_t* dest, Airport_t* src);
+
+int update_airport_connections(void* _air); 
+
 Planes_t get_airport_planes(Airport_t* airport);
 
 int insert_plane(Airport_t* ap,unsigned long int plane_id);

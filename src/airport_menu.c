@@ -8,6 +8,8 @@ char* airport_menu_options[] = {
     "ver aeroportos",
     "inserir nova conexao",
     "ver conexoes de um aeroporto",
+    "excluir conexao",
+    "atualizar condicao do tempo",
     "inserir novo aviao",
     "sair do menu",
     "sair da aplicacao",
@@ -32,6 +34,7 @@ Airport_t* get_airport_from_user(FILE* f) {
 
     clear_input_buffer();
 
+    set_color(f, WHITE, true);
     print_line(f, 80, '-');
     fprintf(f, "nome do aeroporto:");
     scanf ("%[^\n]%*c", name);
@@ -41,6 +44,7 @@ Airport_t* get_airport_from_user(FILE* f) {
 
     fprintf(f, "cidade:");
     scanf ("%[^\n]%*c", city);
+    reset_color(f);
 
     Airport_t* airport = create_airport(name, code, city);
     if(!airport) return NULL;
@@ -252,7 +256,7 @@ int _update_airport(FILE* f) {
             return ERR;
         }
 
-        update_airport(airport, all_airports, NULL);
+        return update_airport(airport, all_airports, NULL);
     }
 
     void* field;
@@ -401,8 +405,45 @@ int _insert_connection(FILE* f) {
 int _select_connections(FILE* f) {
     log_info("_select_connections(): init.");
 
+    set_color(f, WHITE, true);
     fprintf(f, "Digite o ID do aeroporto:");
     unsigned long int airport_id;
+    scanf("%ld", &airport_id);
+    clear_input_buffer();
+    reset_color(f);
+
+    log_info("reading airports...");
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false, false);
+    if(!airports || airports->length > 1 || is_empty_list(airports)){
+        log_error("_insert_connection(): error when trying to read airports.");
+        return ERR;
+    }
+    log_info("finish reading airports.");
+
+    Airport_t* ap = (Airport_t*) airports->head->data;
+   
+    set_color(f, PURPLE, true);
+    print_line(f, 80, '-');
+    fprintf(f, "CONEXOES DO AEROPORTO: "); 
+    reset_color(f);
+
+    set_color(f, RED, true);
+    fprintf(f, "%s ID = %ld\n", ap->name, ap->id);
+    reset_color(f);
+
+    int status = print_list(f, ap->connections, print_airport, PURPLE, true);
+    status = destroy_list(airports, dealloc_airport);
+    
+    return status;
+}
+
+int _delete_connection(FILE* f) {
+    log_info("_delete_connection(): init.");
+
+    set_color(f, WHITE, true);
+    fprintf(f, "Digite o ID do aeroporto:");
+    reset_color(f);
+    unsigned long int airport_id, connection_id;
     scanf("%ld", &airport_id);
     clear_input_buffer();
 
@@ -418,13 +459,56 @@ int _select_connections(FILE* f) {
    
     set_color(f, PURPLE, true);
     print_line(f, 80, '-');
-    fprintf(f, "CONEXOES\n"); 
+    fprintf(f, "CONEXOES DO AEROPORTO: "); 
+    reset_color(f);
+
+    set_color(f, RED, true);
+    fprintf(f, "%s ID = %ld\n", ap->name, ap->id);
     reset_color(f);
 
     int status = print_list(f, ap->connections, print_airport, PURPLE, true);
+
+    set_color(f, WHITE, true);
+    fprintf(f, "Digite o ID da conexao a ser excluida:");
+    scanf("%ld", &connection_id);
+    clear_input_buffer();
+    reset_color(f);
+
+    if(error_in(delete_connection(ap, connection_id))) return ERR;
+    if(error_in(update_airport(ap, find_airport_by_id, &airport_id))) return ERR;
+
     status = destroy_list(airports, dealloc_airport);
-    
     return status;
+}
+
+int _update_weather(FILE* f) {
+    unsigned long int airport_id;
+
+    set_color(f, WHITE, true);
+    fprintf(f, "Digite o ID do aeroporto:");
+    scanf("%ld", &airport_id);
+    clear_input_buffer();
+    reset_color(f);
+
+    log_info("reading airports...");
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false, false);
+    if(!airports || airports->length > 1 || is_empty_list(airports)){
+        log_error("_insert_connection(): error when trying to read airports.");
+        return ERR;
+    }
+    log_info("finish reading airports.");
+
+    Airport_t* ap = (Airport_t*) airports->head->data;
+
+
+    log_info("updating weather.");
+    if(error_in(update_weather(&ap->weather, ap->location.city))) { 
+        log_info("error while updating weather.");
+        return ERR;
+    }
+
+    print_airport(f, ap, YELLOW, true);    
+    return update_airport(ap, find_airport_by_id, &ap->id);
 }
 
 int _insert_plane_on_airport(FILE* f) {
@@ -473,24 +557,35 @@ int run_airport_menu(FILE* f, bool* exit) {
 
             case 5:// inserir conexao
                 error_in(_insert_connection(f)) ?
-                    print_error(f, "nao foi possivel ver aeroportos.") :
-                    print_success(f, "aeroportos encontrados com sucesso!");
+                    print_error(f, "nao foi possivel inserir conexao.") :
+                    print_success(f, "conexao inserida com sucesso!");
                 break;
             case 6:// ver conexoes
                 error_in(_select_connections(f)) ?
-                    print_error(f, "nao foi possivel ver aeroportos.") :
-                    print_success(f, "aeroportos encontrados com sucesso!");
-
-            case 7: // inserir aviao
+                    print_error(f, "nao foi possivel ver conexoes.") :
+                    print_success(f, "conexoes encontradas com sucesso!");
+                break;
+             case 7:
+                error_in(_delete_connection(f)) ?
+                    print_error(f, "nao foi possivel deletar conexao") :
+                    print_success(f, "conexao deletada com sucesso!");
+                break;
+            
+            case 8:
+                error_in(_update_weather(f)) ?
+                    print_error(f, "nao foi possivel atualizar condicao do tempo.") :
+                    print_success(f, "condicao do tempo atualizada com sucesso!");
+                break;
+            case 9: // inserir aviao
                 error_in(_insert_plane_on_airport(f)) ?
                     print_error(f, "nao foi possivel ver aeroportos.") :
                     print_success(f, "aeroportos encontrados com sucesso!");
                 break;
-           
-            case 8:
+
+            case 10:
                 bye = true;
                 break;
-            case 9:
+            case 11:
                 *exit = true;
                 bye = true;
                 break;
