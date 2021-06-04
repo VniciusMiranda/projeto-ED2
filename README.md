@@ -38,6 +38,7 @@ OBS: A implementação de grafos, UI e da API para o clima NÃO é prioridade e 
 ### Depêndencias
 
 - [curllib](https://curl.se/libcurl/c/)
+- [json-c](https://github.com/json-c/json-c)
 - [ncurses](https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/)
 
 

@@ -28,7 +28,7 @@ int airport_fields_options_size = ARRAY_SIZE(airport_fields_options);
 Airport_t* get_airport_from_user(FILE* f) {
     char name[AIRPORT_NAME_MAX];
     char code[AIRPORT_CODE_MAX];
-    Location_t loc;
+    char city[CITY_NAME_MAX];
 
     clear_input_buffer();
 
@@ -40,12 +40,9 @@ Airport_t* get_airport_from_user(FILE* f) {
     scanf ("%[^\n]%*c", code);
 
     fprintf(f, "cidade:");
-    scanf ("%[^\n]%*c", loc.city);
+    scanf ("%[^\n]%*c", city);
 
-    fprintf(f, "pais:");
-    scanf ("%[^\n]%*c", loc.country);
-
-    Airport_t* airport = create_airport(name, code, &loc);
+    Airport_t* airport = create_airport(name, code, city);
     if(!airport) return NULL;
 
     return airport;
@@ -284,14 +281,25 @@ int _select_airport(FILE* f) {
 
     Airports_t airports;
     if(option == 'n' || option == 'N') {
-        airports = read_airport(all_airports, NULL, false);
+        set_color(f, CYAN, true);
+        fprintf(f, "buscando...\n");
+        reset_color(f);
+
+        airports = read_airport(all_airports, NULL, false, false);
     }
     else {
         void* field;
         bool (*filter_func)(void*, void*) = get_airport_filter(f, &field);
-        airports = read_airport(filter_func, field, false);
+        set_color(f, CYAN, true);
+        fprintf(f, "buscando...\n");
+        reset_color(f);
+
+        airports = read_airport(filter_func, field, false, false);
         free(field);
     }
+    set_color(f, CYAN, true);
+    fprintf(f, "busca finalizada!\n");
+    reset_color(f);
 
     if(is_null_ptr(airports)) {
             log_error("_select_airport(): error while reading airports.");
@@ -356,7 +364,7 @@ int _insert_connection(FILE* f) {
     clear_input_buffer();
 
     log_info("reading airports...");
-    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false);
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false, false);
     if(!airports || airports->length > 1 || is_empty_list(airports)) {
         log_error("_insert_connection(): error when trying to read airports.");
         return ERR;
@@ -399,7 +407,7 @@ int _select_connections(FILE* f) {
     clear_input_buffer();
 
     log_info("reading airports...");
-    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false);
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false, false);
     if(!airports || airports->length > 1 || is_empty_list(airports)){
         log_error("_insert_connection(): error when trying to read airports.");
         return ERR;

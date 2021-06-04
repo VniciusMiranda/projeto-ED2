@@ -8,8 +8,10 @@ int init_log(bool enable_color, bool use_log_file) {
         LOG_FILE = stdout;
 
     else {
-        set_log_file("airline-management.log");
-        LOG_FILE = fopen(LOG_FILE_NAME, "w");
+        char file_name[] = "airline-management.log";
+        set_log_file(file_name);
+        LOG_FILE = !file_exists(file_name) ? fopen(LOG_FILE_NAME, "w") : fopen(LOG_FILE_NAME, "a"); 
+
         if(is_null_ptr(LOG_FILE)) {
             fprintf(stderr, "error when initializing application log system...\n");
             exit(EXIT_FAILURE); 

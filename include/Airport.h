@@ -9,7 +9,8 @@
 #include "Database.h"
 #include "log.h"
 
-#include "WeatherCondition.h"
+#include "open_weather.h"
+#include "weather.h"
 #include "Location.h"
 #include "Plane.h"
 
@@ -29,7 +30,7 @@ typedef struct Airport {
 
     /* linked list of airports */
     Connections_t connections;
-    WeatherCondition_t WeatherCondition;
+    Weather_t weather;
 
     /* foreign keys */
     unsigned long int connections_id[MAX_FOREIGN_KEY];
@@ -42,7 +43,7 @@ typedef struct Airport {
 
 typedef linked_list_t* Airports_t;
 
-Airport_t* create_airport(char* name, char* code, Location_t* loc);
+Airport_t* create_airport(char* name, char* code, char* city);
 
 int dealloc_airport(void* ap_ptr);
 
@@ -90,7 +91,7 @@ int get_airport_country(void* d);
 
 int write_airport(void* ap);
 
-Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not);
+Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not, bool update_w);
 
 int delete_airport(bool(find_func)(void*, void*), void* cmp);
 

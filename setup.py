@@ -9,8 +9,7 @@ class colors:
     RESET = '\033[0m' #RESET COLOR
 
 project_dir = "projeto-ED2" 
-dependencies = "gcc curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make"
-
+dependencies = "gcc curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make libjson-c-dev"
 
 def print_with_color(message, color=colors.OK):
     print(f"{color}{message}{colors.RESET}")

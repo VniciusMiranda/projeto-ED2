@@ -11,7 +11,6 @@ void _buildUrlParams(char* key, void* value_ptr, int index, void* url_ptr) {
     strcat(url, key);
     strcat(url, "=");
     strcat(url, value);
-    printf("%s\n", url);
 
     strcpy((char*) url_ptr, url); 
 }
@@ -44,21 +43,25 @@ int GETrequest(url_params_t params, char* _url, content_t* response) {
     if(params)
         foreach_hm(params, _buildUrlParams, &url);
 
-    log_warning("url:"); 
-    log_info(url);
+    sprintf(LOG, "url: %s", url);
+    log_warning(LOG); 
 
     curl_easy_setopt(curl, CURLOPT_URL, url);    
     
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writecallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
 
-    log_warning(response->str);
       
     curl_easy_setopt(curl, CURLOPT_ALTSVC , (long) CURL_HTTP_VERSION_3);
 
     /* Check for errors */
-    if(curl_easy_perform(curl) != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",curl_easy_strerror(res));
+    if(curl_easy_perform(curl) != CURLE_OK) {
+        sprintf(LOG, "curl_easy_perform() failed: %s\n",curl_easy_strerror(res));
+        log_error(LOG);
+    }
+
+    sprintf(LOG, "response: %s", response->str);
+    log_warning(LOG); 
 
     curl_easy_cleanup(curl);
 

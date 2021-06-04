@@ -2,7 +2,7 @@
 
 
 // TODO: implement automatic weather condition setting
-Airport_t* create_airport(char* name, char* code, Location_t* loc) {
+Airport_t* create_airport(char* name, char* code, char* city) {
     if(is_null_ptr(name) || is_null_ptr(code)) return NULL;
 
     Airport_t* new_airport = (Airport_t*) malloc(sizeof(Airport_t));
@@ -13,15 +13,25 @@ Airport_t* create_airport(char* name, char* code, Location_t* loc) {
 
     new_airport->planes = create_list();
     new_airport->connections = create_list();
-    new_airport->location = *loc;
 
     new_airport->id = ++LAST_VALID_ID_AIRPORT;
 
     new_airport->num_connections = 0;
     new_airport->num_planes = 0;
 
-    // hardcoded test value
-    new_airport->WeatherCondition = (WeatherCondition_t) SUNNY;
+    struct json_object* json = get_open_weather_response(city);
+    if(!json) {
+        log_error("error while fetching API data");
+        return new_airport;
+    }
+
+    Weather_t* weather = get_wether(json);
+    copy_weather(&new_airport->weather, weather);
+    destroy_weather(weather);
+
+    Location_t* location = get_location(json);
+    copy_location(&new_airport->location, location);
+    destroy_location(location);
     
     return new_airport;
 }
@@ -60,7 +70,7 @@ int dealloc_airport(void* ap_ptr){
 int insert_connection(Airport_t* ap, unsigned long int conn_id) {
     if(!ap) return ERR;
 
-    Airports_t result = read_airport(find_airport_by_id, &conn_id, false);
+    Airports_t result = read_airport(find_airport_by_id, &conn_id, false, false);
     if(is_null_ptr(result)) {
         log_error("insert_connection(): read_airport returned NULL.");
         return ERR;
@@ -102,7 +112,7 @@ Connections_t get_connections(Airport_t* ap) {
     int_array_t arr;
     arr.array = ap->connections_id;
     arr.size = ap->num_connections;
-    return read_airport(find_airport_by_ids, &arr, false);
+    return read_airport(find_airport_by_ids, &arr, false, false);
 }
 
 
@@ -128,7 +138,7 @@ int delete_airport(bool(find_func)(void*, void*), void* cmp) {
     if(!find_func) return ERR;
     log_info("delete_airport(): init.");
 
-      Airports_t airports = read_airport(find_func, cmp, true);
+      Airports_t airports = read_airport(find_func, cmp, true, false);
     if(is_null_ptr(airports)) return ERR;
 
     recreate_database_table(TABLE_NAME_AIRPORT);
@@ -145,7 +155,7 @@ int delete_airport(bool(find_func)(void*, void*), void* cmp) {
     cmp 
     return linked_list of airport
 */
-Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not) {
+Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not, bool update_w) {
     log_info("read_airport(): init.");
     char table_path[PATH_MAX]; 
     get_airport_table_path(table_path);
@@ -179,6 +189,8 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not) {
             sprintf(LOG, "found match id: %ld", air->id);
             log_info(LOG);
 
+            if(update_w) update_weather(&air->weather, air->location.city);
+
             if(insert_element(airports, air) == ERR){
                 log_warning("read_airport(): error while adding airports.");
             }
@@ -194,7 +206,7 @@ int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp)
     char table_path[PATH_MAX];
     get_airport_table_path(table_path);
 
-    Airports_t airports = read_airport(all_airports, NULL, false);
+    Airports_t airports = read_airport(all_airports, NULL, false, false);
     if(is_null_ptr(airports)) return ERR;
 
     Airports_t updated_airports = create_list();
@@ -223,18 +235,16 @@ int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp)
 void print_airport(FILE* f, void* d, color_t color, bool is_bold) {
     Airport_t* ap = (Airport_t*) d;
 
-    char wc[TEXT_MAX];
-    getName_wc(ap->WeatherCondition, wc);
+    set_color(f, WHITE, is_bold);
+    print_line(f, 80, '=');
+    reset_color(f);
 
     set_color(f, color, is_bold);
-    print_line(f, 80, 0);
-
     fprintf(f, "id: %ld\n", ap->id);
     fprintf(f, "nome do aeroporto: %s\n", ap->name);
     fprintf(f, "codigo: %s\n", ap->code);
     fprintf(f, "cidade: %s\n", ap->location.city);
     fprintf(f, "país: %s\n", ap->location.country);
-    fprintf(f, "weather condition: %s\n", wc);
 
     fprintf(f, "numero de conexoes: %d\n", ap->num_connections);
     fprintf(f, "ids das conexoes: ");
@@ -246,8 +256,9 @@ void print_airport(FILE* f, void* d, color_t color, bool is_bold) {
     fprintf(f, "ids dos avioes: ");
     for(int i = 0; i < ap->num_planes; i++)
         fprintf(f, "%ld ", ap->planes_id[i]);
-
     fprintf(f, "\n");
+
+    print_weather(f, &ap->weather);
 
     reset_color(f);
 }
@@ -262,7 +273,7 @@ int update_airport_connections(void* _air) {
         arr.array = airport->connections_id;
         arr.size = airport->num_connections;
 
-        airport->connections = read_airport(find_airport_by_ids, &arr, false);
+        airport->connections = read_airport(find_airport_by_ids, &arr, false, false);
         return OK;
     }
 

@@ -85,4 +85,6 @@ void id_array_to_long_int_arr(char* arr, int size, long int dest[]);
 
 int get_first_letter_upper_case_int_repr(char* str);
 
+double convert_kelvin_to_celsius(double k);
+
 #endif
