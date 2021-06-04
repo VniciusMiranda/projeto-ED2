@@ -93,23 +93,23 @@ search_func get_airport_filter(FILE* f, void** field_value) {
     int selected_option = get_selected_option(f, BLUE, airport_fields_options, airport_fields_options_size);
     clear_input_buffer();
 
+    long int* id = (long int *) malloc(sizeof(long int ));
+    if(!id) return NULL;
+
+    char* str_input = (char*) malloc(sizeof(TEXT_MAX));
+    if(!str_input) return NULL;
 
     switch(selected_option) {
-        char country[COUNTRY_NAME_MAX];
-        char name[AIRPORT_NAME_MAX];
-        char code[AIRPORT_CODE_MAX];
-        char city[CITY_NAME_MAX];
-        long int id;
 
         case 1:
          print_line_with_color(f, 80, 0, YELLOW, true);
 
             set_color(f, WHITE, true);
             fprintf(f, "id:");
-            scanf("%ld", &id);
+            scanf("%ld", id);
             reset_color(f);
 
-            *field_value = (void*) &id; 
+            *field_value = (void*) id; 
             return find_airport_by_id;
         
         case 2:
@@ -117,11 +117,11 @@ search_func get_airport_filter(FILE* f, void** field_value) {
             
             set_color(f, WHITE, true);
             fprintf(f, "nome:");
-            scanf ("%[^\n]%*c", name);
+            scanf ("%[^\n]%*c", str_input);
 
             reset_color(f);
 
-            *field_value = (void*) name; 
+            *field_value = (void*) str_input; 
             return find_airport_by_name;
 
         case 3:
@@ -129,11 +129,11 @@ search_func get_airport_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "codigo:");
-            scanf ("%[^\n]%*c", code);
+            scanf ("%[^\n]%*c", str_input);
 
             reset_color(f);
 
-            *field_value = (void*) code; 
+            *field_value = (void*) str_input; 
             return find_airport_by_code;
            
 
@@ -142,10 +142,10 @@ search_func get_airport_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "cidade:");
-            scanf ("%[^\n]%*c", city);
+            scanf ("%[^\n]%*c", str_input);
             reset_color(f);
 
-            *field_value = (void*) city; 
+            *field_value = (void*) str_input; 
             return find_airport_by_city;
 
         case 5:
@@ -153,10 +153,10 @@ search_func get_airport_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "pais:");
-            scanf ("%[^\n]%*c", country);
+            scanf ("%[^\n]%*c", str_input);
             reset_color(f);
 
-            *field_value = (void*) country; 
+            *field_value = (void*) str_input; 
             return find_airport_by_country;
 
         default:
@@ -215,7 +215,12 @@ int _delete_airport(FILE* f) {
 
     void* field;
     bool (*search_func)(void*, void*) = get_airport_filter(f, &field);    
-    return delete_airport(search_func, field);
+
+
+    int status = delete_airport(search_func, field);
+    free(field);
+
+    return status;
 }
 
 
@@ -255,8 +260,11 @@ int _update_airport(FILE* f) {
 
     void* field;
     bool (*search_func)(void*, void*) = get_airport_filter(f, &field);    
-    return update_airport(airport, search_func, field);
 
+    int status = update_airport(airport, search_func, field);
+    free(field);
+
+    return status;
 }
 
 int _select_airport(FILE* f) {
@@ -275,13 +283,14 @@ int _select_airport(FILE* f) {
     clear_input_buffer();
 
     Airports_t airports;
-    if(option == 'n' || option == 'N')
-        airports = read_airport(all_airports, NULL);
-        
+    if(option == 'n' || option == 'N') {
+        airports = read_airport(all_airports, NULL, false);
+    }
     else {
         void* field;
-        bool (*search_func)(void*, void*) = get_airport_filter(f, &field);
-        airports = read_airport(search_func, field);
+        bool (*filter_func)(void*, void*) = get_airport_filter(f, &field);
+        airports = read_airport(filter_func, field, false);
+        free(field);
     }
 
     if(is_null_ptr(airports)) {
@@ -347,8 +356,8 @@ int _insert_connection(FILE* f) {
     clear_input_buffer();
 
     log_info("reading airports...");
-    Airports_t airports = read_airport(find_airport_by_id, &airport_id);
-    if(!airports || airports->length > 1 || is_empty_list(airports)){
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false);
+    if(!airports || airports->length > 1 || is_empty_list(airports)) {
         log_error("_insert_connection(): error when trying to read airports.");
         return ERR;
     }
@@ -390,7 +399,7 @@ int _select_connections(FILE* f) {
     clear_input_buffer();
 
     log_info("reading airports...");
-    Airports_t airports = read_airport(find_airport_by_id, &airport_id);
+    Airports_t airports = read_airport(find_airport_by_id, &airport_id, false);
     if(!airports || airports->length > 1 || is_empty_list(airports)){
         log_error("_insert_connection(): error when trying to read airports.");
         return ERR;
@@ -398,8 +407,16 @@ int _select_connections(FILE* f) {
     log_info("finish reading airports.");
 
     Airport_t* ap = (Airport_t*) airports->head->data;
+   
+    set_color(f, PURPLE, true);
+    print_line(f, 80, '-');
+    fprintf(f, "CONEXOES\n"); 
+    reset_color(f);
 
-    return print_list(f, ap->connections, print_airport, YELLOW, true);
+    int status = print_list(f, ap->connections, print_airport, PURPLE, true);
+    status = destroy_list(airports, dealloc_airport);
+    
+    return status;
 }
 
 int _insert_plane_on_airport(FILE* f) {

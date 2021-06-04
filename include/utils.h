@@ -26,7 +26,6 @@ typedef struct int_array {
     int size;
 } int_array_t;
 
-typedef char* id_array_t;
 
 /* get the name of a variable */
 #define getName(var, str) sprintf(str, "%s", #var) 

@@ -158,6 +158,9 @@ int sort_list(linked_list_t* l, int(*get_attr_func)(void*), int option);
 */
 int copy_list(linked_list_t* dest, linked_list_t* src);
 
+
+int for_each_element(linked_list_t* l, int(*process)(void*));
+
 bool is_empty_list(linked_list_t* l);
 
 #endif

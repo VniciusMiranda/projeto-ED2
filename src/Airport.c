@@ -16,7 +16,6 @@ Airport_t* create_airport(char* name, char* code, Location_t* loc) {
     new_airport->location = *loc;
 
     new_airport->id = ++LAST_VALID_ID_AIRPORT;
-    new_airport->deleted = false;
 
     new_airport->num_connections = 0;
     new_airport->num_planes = 0;
@@ -61,7 +60,7 @@ int dealloc_airport(void* ap_ptr){
 int insert_connection(Airport_t* ap, unsigned long int conn_id) {
     if(!ap) return ERR;
 
-    Airports_t result = read_airport(find_airport_by_id, &conn_id);
+    Airports_t result = read_airport(find_airport_by_id, &conn_id, false);
     if(is_null_ptr(result)) {
         log_error("insert_connection(): read_airport returned NULL.");
         return ERR;
@@ -77,6 +76,13 @@ int insert_connection(Airport_t* ap, unsigned long int conn_id) {
         return ERR;
     }
 
+    for(int i = 0; i < ap->num_connections; i++) {
+        if(ap->connections_id[i] == conn_id) {
+            log_info("insert_connection(): connection already exists on this airport");
+            return ERR;
+        }
+    }
+
     ap->connections_id[ap->num_connections++] = conn_id;
     if(insert_element(ap->connections, result->head->data) == ERR) {
         log_error("insert_connection(): error while inserting element.");
@@ -85,6 +91,7 @@ int insert_connection(Airport_t* ap, unsigned long int conn_id) {
 
     return OK;
 }
+
 int insert_plane(Airport_t* ap, unsigned long int plane_id){
     if(!ap) return ERR;
     ap->planes_id[ap->num_planes++] = plane_id;
@@ -95,13 +102,15 @@ Connections_t get_connections(Airport_t* ap) {
     int_array_t arr;
     arr.array = ap->connections_id;
     arr.size = ap->num_connections;
-    return read_airport(find_airport_by_ids, &arr);
+    return read_airport(find_airport_by_ids, &arr, false);
 }
 
 
 /* data persitency functions */
-int write_airport(Airport_t* ap) {
-    if(!ap) return ERR;
+int write_airport(void* ptr) {
+    if(!ptr) return ERR;
+
+    Airport_t* ap = (Airport_t*) ptr; 
 
     char table_path[PATH_MAX]; 
     get_airport_table_path(table_path);
@@ -114,57 +123,29 @@ int write_airport(Airport_t* ap) {
     fclose(f);
 }
 
-
+// TODO: refactor this function
 int delete_airport(bool(find_func)(void*, void*), void* cmp) {
     if(!find_func) return ERR;
     log_info("delete_airport(): init.");
 
-    char table_path[PATH_MAX];
-    get_airport_table_path(table_path);
+      Airports_t airports = read_airport(find_func, cmp, true);
+    if(is_null_ptr(airports)) return ERR;
 
-    FILE* f;
-    int pos = 0;
-    bool found_match = false;
+    recreate_database_table(TABLE_NAME_AIRPORT);
+    if(error_in(for_each_element(airports, write_airport))) return ERR;
 
-    while(true) {
-
-        Airport_t* ap = (Airport_t*) malloc(sizeof(Airport_t));
-        if(!ap) return ERR;
-
-        f = fopen(table_path, "rb");
-        fseek(f, pos, SEEK_SET);
-
-        if(!f) return ERR;
-
-        log_info("reading value from database.");
-        fread(ap, sizeof(Airport_t), 1, f);
-        if(feof(f)) {
-            log_info("found end of file.");
-            dealloc_airport(ap);
-            break;
-        }
-
-        if(find_func(ap, cmp)) {
-            log_info("found aiport to delete.");
-            found_match = true;
-            fseek(f, -((int)sizeof(Airport_t)), SEEK_CUR);
-            pos = ftell(f);
-            fclose(f);
-            ap->deleted = true;
-            log_info("opening to write new value.");
-            f = fopen(table_path, "wb");
-            fseek(f, pos, SEEK_CUR);
-            log_info("writing new value.");
-            fwrite(ap, sizeof(Airport_t), 1, f);
-            pos = ftell(f);
-            fclose(f);
-        }
-    }
-
-    return found_match ? OK : ERR;
+    return OK;
 }
 
-Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
+/*
+    Read airport table and returns all aiports that satisfy the condition
+    of the @find_func function and are not deleted.
+    params;
+    find_func
+    cmp 
+    return linked_list of airport
+*/
+Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not) {
     log_info("read_airport(): init.");
     char table_path[PATH_MAX]; 
     get_airport_table_path(table_path);
@@ -181,44 +162,31 @@ Airports_t read_airport(bool(find_func)(void*, void*), void* cmp) {
         if(is_null_ptr(air)) return NULL;
 
         fread(air, sizeof(Airport_t), 1, f);
-        
+
+        air->connections = NULL;
+        air->planes = NULL;
+
         if(feof(f)) {
             dealloc_airport(air);
             break;
         }
-        /*
-            the use of connections are related to features that will be implemented
-            on the major version 2.0.0
-        */
-        // if(connections_ids.size != 0) {
-        //     sprintf(LOG,"read_airport(): reading %d connections.", connections_ids.size);
-        //     log_info(LOG);
-        //     air->connections = read_airport(find_airport_by_ids, &connections_ids);
-        //     if(is_null_ptr(air->connections)) {
-        //         log_error("read_airport(): error while reading connections.");
-        //         return NULL;
-        //     }
-        //     log_info("read_airport(): finish reading connections.");
-        // }
-        // else 
 
         air->connections = create_list();
         air->planes = create_list();
 
-        if(air->deleted) {
-            dealloc_airport(air);
-            continue;
-        }
+        bool found_match = not ? !find_func(air, cmp) : find_func(air, cmp);
+        if(found_match) {
+            sprintf(LOG, "found match id: %ld", air->id);
+            log_info(LOG);
 
-        if(find_func(air, cmp)) {
             if(insert_element(airports, air) == ERR){
                 log_warning("read_airport(): error while adding airports.");
             }
         }
     }
-
     fclose(f);
-    return airports;   
+
+    return error_in(update_airports_connections(airports)) ? NULL : airports;   
 }
 
 int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp) {
@@ -226,76 +194,95 @@ int update_airport(Airport_t* new_ap, bool(*find_func)(void*, void*), void* cmp)
     char table_path[PATH_MAX];
     get_airport_table_path(table_path);
 
-    FILE* f;
-    int pos = 0;
-    bool found_match = false;
-    while(true) {
+    Airports_t airports = read_airport(all_airports, NULL, false);
+    if(is_null_ptr(airports)) return ERR;
 
-        Airport_t* ap = (Airport_t*) malloc(sizeof(Airport_t));
-        if(!ap) return ERR;
+    Airports_t updated_airports = create_list();
+    if(is_null_ptr(updated_airports)) return ERR;
 
-        f = fopen(table_path, "rb");
-        fseek(f, pos, SEEK_SET);
+    element_t* aux = airports->head;
 
-        if(!f) return ERR;
-
-        fread(ap, sizeof(Airport_t), 1, f);
-        if(feof(f)) {
-            dealloc_airport(ap);
-            break;
-        }
-
-        if(find_func(ap, cmp)) {
-            found_match = true;
-            fseek(f, -((int)sizeof(Airport_t)), SEEK_CUR);
-            pos = ftell(f);
-            fclose(f);
-            ap->deleted = true;
-            f = fopen(table_path, "wb");
-            fseek(f, pos, SEEK_CUR);
-            fwrite(new_ap, sizeof(Airport_t), 1, f);
-            pos = ftell(f);
-            fclose(f);
-        }
+    while(aux) {
+        if(find_func(aux->data, cmp)) {
+            new_ap->id = ((Airport_t*) aux->data)->id;
+            insert_element(updated_airports, new_ap);
+        } 
+        else 
+            insert_element(updated_airports, aux->data);
+        
+        aux = aux->next;
     }
 
-    return found_match ? OK : ERR;
-}
+    recreate_database_table(TABLE_NAME_AIRPORT);
+    for_each_element(updated_airports, write_airport);
 
+    return OK;
+}
 
 /* airport print format */
 void print_airport(FILE* f, void* d, color_t color, bool is_bold) {
     Airport_t* ap = (Airport_t*) d;
 
-    if(!ap->deleted) {
+    char wc[TEXT_MAX];
+    getName_wc(ap->WeatherCondition, wc);
 
-        char wc[TEXT_MAX];
-        getName_wc(ap->WeatherCondition, wc);
+    set_color(f, color, is_bold);
+    print_line(f, 80, 0);
 
-        set_color(f, color, is_bold);
-        print_line(f, 80, 0);
+    fprintf(f, "id: %ld\n", ap->id);
+    fprintf(f, "nome do aeroporto: %s\n", ap->name);
+    fprintf(f, "codigo: %s\n", ap->code);
+    fprintf(f, "cidade: %s\n", ap->location.city);
+    fprintf(f, "país: %s\n", ap->location.country);
+    fprintf(f, "weather condition: %s\n", wc);
 
-        fprintf(f, "id: %ld\n", ap->id);
-        fprintf(f, "nome do aeroporto: %s\n", ap->name);
-        fprintf(f, "codigo: %s\n", ap->code);
-        fprintf(f, "cidade: %s\n", ap->location.city);
-        fprintf(f, "país: %s\n", ap->location.country);
-        fprintf(f, "weather condition: %s\n", wc);
-        fprintf(f, "numero de conexoes: %d\n", ap->num_connections);
-        fprintf(f, "ids das conexoes: ");
-        for(int i = 0; i < ap->num_connections; i++)
-            fprintf(f, "%ld ", ap->connections_id[i]);
-        fprintf(f, "\n");
+    fprintf(f, "numero de conexoes: %d\n", ap->num_connections);
+    fprintf(f, "ids das conexoes: ");
+    for(int i = 0; i < ap->num_connections; i++)
+        fprintf(f, "%ld ", ap->connections_id[i]);
+    fprintf(f, "\n");
 
-        fprintf(f, "numero de avioes: %d\n", ap->num_planes);
-        fprintf(f, "ids dos avioes: ");
-        for(int i = 0; i < ap->num_planes; i++)
-            fprintf(f, "%ld ", ap->planes_id[i]);
-        fprintf(f, "\n");
-    }
+    fprintf(f, "numero de avioes: %d\n", ap->num_planes);
+    fprintf(f, "ids dos avioes: ");
+    for(int i = 0; i < ap->num_planes; i++)
+        fprintf(f, "%ld ", ap->planes_id[i]);
+
+    fprintf(f, "\n");
 
     reset_color(f);
 }
+
+int update_airport_connections(void* _air) {
+    if(!_air) return ERR;
+
+    Airport_t* airport = (Airport_t*) _air; 
+
+    if(airport->num_connections > 0) {
+        int_array_t arr;
+        arr.array = airport->connections_id;
+        arr.size = airport->num_connections;
+
+        airport->connections = read_airport(find_airport_by_ids, &arr, false);
+        return OK;
+    }
+
+    airport->connections = create_list();
+
+    return OK;
+}
+
+int update_airports_connections(Airports_t airports) {
+    if(is_null_ptr(airports)) return ERR;
+    
+    return for_each_element(airports, update_airport_connections);
+}
+
+int insert_connection(Airport_t* ap,unsigned long int conn_id);
+
+Planes_t get_airport_planes(Airport_t* airport);
+
+int insert_plane(Airport_t* ap,unsigned long int plane_id);
+
 
 
 long int resolve_airport_id() {
@@ -349,7 +336,7 @@ bool find_airport_by_code(void* d, void* cmp) {
 
 bool find_airport_by_id(void* d, void* cmp) {
     Airport_t* ap = (Airport_t*) d;
-    int ID = *((int*)cmp);
+    long int ID = *((long int*)cmp);
     return ap->id == ID;
 }
 

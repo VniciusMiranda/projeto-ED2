@@ -21,7 +21,7 @@ unsigned long int LAST_VALID_ID_AIRPORT;
 
 typedef struct Airport {
     unsigned long int id;
-    bool deleted;
+
     char name[AIRPORT_NAME_MAX];
     char code[AIRPORT_CODE_MAX];
     Location_t location;
@@ -48,13 +48,16 @@ int dealloc_airport(void* ap_ptr);
 
 void print_airport(FILE* f, void* d, color_t color, bool is_bold);
 
+Connections_t get_airport_connections(Airport_t* airport);
+
+int update_airports_connections(Airports_t airports);
+
 int insert_connection(Airport_t* ap,unsigned long int conn_id);
+
+Planes_t get_airport_planes(Airport_t* airport);
 
 int insert_plane(Airport_t* ap,unsigned long int plane_id);
 
-Connections_t get_connections(Airport_t* ap);
-
-Planes_t get_planes();
 
 /* search functions */
 bool find_airport_by_name(void* d, void* cmp);
@@ -85,10 +88,9 @@ int get_airport_country(void* d);
 
 /* data persitance functions */
 
-int write_airport(Airport_t* ap);
+int write_airport(void* ap);
 
-
-Airports_t read_airport(bool(find_func)(void*, void*), void* cmp);
+Airports_t read_airport(bool(find_func)(void*, void*), void* cmp, bool not);
 
 int delete_airport(bool(find_func)(void*, void*), void* cmp);
 

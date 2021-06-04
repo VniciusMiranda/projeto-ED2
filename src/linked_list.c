@@ -285,8 +285,16 @@ element_t* partition(element_t* l, element_t* h, int(*get_attr_func)(void*), int
     return i;
 }
 
-int copy_list(linked_list_t* dest, linked_list_t* src) {
-    if(is_null_ptr(dest) || is_null_ptr(src)) return ERR;
+int for_each_element(linked_list_t* l, int(*process)(void*)) {
+    if(is_null_ptr(l)) return ERR;
+
+    element_t* aux = l->head;
+    while(aux) {
+        if(error_in(process(aux->data))) return ERR;
+        aux = aux->next;
+    }
+
+    return OK;
 }
 
 bool is_empty_list(linked_list_t* l) {
