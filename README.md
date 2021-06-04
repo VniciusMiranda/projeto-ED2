@@ -97,7 +97,7 @@ Volte para o diretório do projeto rode e verifique se o erro persiste:
 make run
 ```
 
-Caso isso não funcione basta remover do makefile todos os arquivos que utilizam o header curl/curl.h. A aplicação também funciona independente desse header.
+Caso isso não funcione basta remover do makefile todos os arquivos que utilizam o header curl/curl.h. A versao 1.0.0 da aplicação também funciona independente desse header.
 
 ### Autores
 
