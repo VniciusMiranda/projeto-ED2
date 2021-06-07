@@ -2,6 +2,7 @@
 
 long int (*resolve_functions[])() = {
     resolve_airport_id,
+    resolve_plane_id,
 };
 int NUMB_IDS_TO_RESOLVE = ARRAY_SIZE(resolve_functions);
 

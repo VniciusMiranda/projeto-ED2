@@ -25,5 +25,6 @@ int recreate_database_table(char* table_name);
 
 int get_database_table_path(char* dest, char* table_name);
 
+bool all_registers(void* d, void* cmp);
 
 #endif

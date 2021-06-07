@@ -24,12 +24,16 @@ Plane_t* get_plane_from_user(FILE* f) {
     AirlineCompany_t AirlineCompany;
     clear_input_buffer();
 
+    set_color(f, WHITE, true);
+
     print_line(f, 80, '-');
-    fprintf(f, "modelo do aviao");
+    fprintf(f, "modelo do aviao: ");
     scanf ("%[^\n]%*c", model);
 
-    fprintf(f, "capacidade do avião:");
+    fprintf(f, "capacidade do avião: ");
     scanf ("%d", &capacidade);
+
+    reset_color(f);
 
     Plane_t* plane = create_plane(capacidade, AirlineCompany, (plane_model_t)model);
 
@@ -77,21 +81,26 @@ search_func get_plane_filter(FILE* f, void** field_value) {
     int selected_option = get_selected_option(f, BLUE, plane_fields_options, plane_fields_options_size);
     clear_input_buffer();
 
+    long int* id = (long int *) malloc(sizeof(long int ));
+    if(!id) return NULL;
+
+    int* int_input = (int *) malloc(sizeof(int ));
+    if(!int_input) return NULL;
+
+    char* str_input = (char*) malloc(sizeof(TEXT_MAX));
+    if(!str_input) return NULL;
+
     switch(selected_option) {
-        char model[PLANE_MODEL_MAX];
-        char AirlineCompany[COMPANY_NAME_MAX];
-        int capacity;
-        long int id;
 
         case 1:
          print_line_with_color(f, 80, 0, YELLOW, true);
 
             set_color(f, WHITE, true);
             fprintf(f, "id:");
-            scanf("%ld", &id);
+            scanf("%ld", id);
             reset_color(f);
 
-            *field_value = (void*) &id; 
+            *field_value = (void*) id; 
             return find_plane_by_id;
         
         case 2:
@@ -99,11 +108,11 @@ search_func get_plane_filter(FILE* f, void** field_value) {
             
             set_color(f, WHITE, true);
             fprintf(f, "modelo:");
-            scanf ("%[^\n]%*c", model);
+            scanf ("%[^\n]%*c", str_input);
 
             reset_color(f);
 
-            *field_value = (void*) model; 
+            *field_value = (void*) str_input; 
             return find_plane_by_model;
 
         case 3:
@@ -111,11 +120,11 @@ search_func get_plane_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "companhia:");
-            scanf ("%[^\n]%*c", AirlineCompany);
+            scanf ("%[^\n]%*c", str_input);
 
             reset_color(f);
 
-            *field_value = (void*) AirlineCompany; 
+            *field_value = (void*) str_input; 
             return find_plane_by_company;
            
 
@@ -124,11 +133,10 @@ search_func get_plane_filter(FILE* f, void** field_value) {
 
             set_color(f, WHITE, true);
             fprintf(f, "capacidade:");
-            scanf ("%d", &capacity);
+            scanf ("%d", int_input);
             reset_color(f);
 
-            *field_value = (void*) &capacity; 
-
+            *field_value = (void*) int_input; 
             return find_plane_by_capacity;
 
         default:
@@ -137,10 +145,13 @@ search_func get_plane_filter(FILE* f, void** field_value) {
 }
 
 int _insert_plane(FILE* f) {
+    log_info("insert_plane(): init");
     Plane_t* plane = get_plane_from_user(f);
 
     print_plane(f, (void*) plane, YELLOW, true);
 
+
+    log_info("writing plane on the database.");
     if(write_plane(plane)) return ERR;
 
     return OK;
@@ -186,6 +197,7 @@ int _delete_plane(FILE* f) {
 
     void* field;
     bool (*search_func)(void*, void*) = get_plane_filter(f, &field);    
+    log_info("got plane filter");
     return delete_plane(search_func, field);
 }
 
@@ -245,12 +257,12 @@ int _select_plane(FILE* f) {
 
     Planes_t planes;
     if(option == 'n' || option == 'N') 
-        planes = read_plane(all_planes, NULL);
+        planes = read_plane(all_planes, NULL, false);
     else {
         void* field;
         bool (*search_func)(void*, void*) = get_plane_filter(f, &field);
 
-        planes = read_plane(search_func, field);
+        planes = read_plane(search_func, field, false);
     }
 
 
@@ -260,15 +272,15 @@ int _select_plane(FILE* f) {
     reset_color(f);
     clear_input_buffer();
 
-    int order;
-    set_color(f, WHITE, true);
-    fprintf(f, "qual a ordem que sera usada?(1 para ascendente / 0 para descendente)\n");
-    scanf("%d", &order);
-    reset_color(f);
-    clear_input_buffer();
-
-
+    
     if(option == 'y' || option == 'Y') {
+        int order;
+        set_color(f, WHITE, true);
+        fprintf(f, "qual a ordem que sera usada?(1 para ascendente / 0 para descendente)\n");
+        scanf("%d", &order);
+        reset_color(f);
+        clear_input_buffer();
+
         set_color(f, WHITE, true);
         fprintf(f, "Por qual campo voce deseja ordenar?\n");
         reset_color(f);

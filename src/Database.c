@@ -28,17 +28,7 @@ int init_database(FILE* f) {
 
     init_database_tables();
 }
-/*
-    Will be implemented on version 2.0.0
-*/
-int clean_database() {
 
-}
-
-
-int clean_database_tables() {
-
-}
 
 int init_database_tables() {
     log_info("processing tables.");
@@ -115,4 +105,8 @@ int get_database_table_path(char* dest, char* table_name) {
     strcat(dest, ".dat");
 
     return OK;
+}
+
+bool all_registers(void* d, void* cmp){
+    return true;
 }

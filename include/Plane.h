@@ -69,9 +69,9 @@ int get_plane_company(void* d);
 
 /* data persitance functions */
 
-int write_plane(Plane_t* ap);
+int write_plane(void* ap);
 
-Planes_t read_plane(bool(find_func)(void*, void*), void* cmp);
+Planes_t read_plane(bool(find_func)(void*, void*), void* cmp, bool not);
 
 Planes_t read_all_planes();
 
@@ -84,5 +84,7 @@ int init_planes_table();
 long int resolve_plane_id();
 
 int get_plane_table_path(char* dest);
+
+bool all_planes(void* d, void* cmp);
 
 #endif 

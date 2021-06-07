@@ -47,7 +47,6 @@ Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_mode
     Plane_t* new_plane = (Plane_t*) malloc(sizeof(Plane_t));
     if(is_null_ptr(new_plane)) return NULL;
 
-
     new_plane->model = model;
     new_plane->capacity = capacity;
     new_plane->id = ++LAST_VALID_ID_PLANE;
@@ -128,8 +127,10 @@ int get_plane_company(void* d){
     return get_first_letter_upper_case_int_repr(pl->airlineCompany.name);
 }
 
-int write_plane(Plane_t* pl) {
+int write_plane(void* pl) {
     if(!pl) return ERR;
+
+    Plane_t* plane = (Plane_t*) pl;
 
     char table_path[PATH_MAX]; 
     get_plane_table_path(table_path);
@@ -137,12 +138,12 @@ int write_plane(Plane_t* pl) {
     FILE* f = fopen(table_path, "ab");
     if(!f) return ERR; 
 
-    fwrite(pl, sizeof(Plane_t), 1, f);
+    fwrite(plane, sizeof(Plane_t), 1, f);
 
     fclose(f);
 }
 
-Planes_t read_plane(bool(find_func)(void*, void*), void* cmp) {
+Planes_t read_plane(bool(find_func)(void*, void*), void* cmp, bool not) {
     char table_path[PATH_MAX]; 
     get_plane_table_path(table_path);
 
@@ -167,8 +168,8 @@ Planes_t read_plane(bool(find_func)(void*, void*), void* cmp) {
             dealloc_pl(pl);
             continue;
         }
-
-        if(find_func(pl, cmp))
+        bool found_match = not ? !find_func(pl, cmp) : find_func(pl, cmp);
+        if(found_match)
             if(insert_element(planes, pl) == ERR)
                 log_error("error while reading planes");
     }
@@ -177,118 +178,50 @@ Planes_t read_plane(bool(find_func)(void*, void*), void* cmp) {
     return planes;   
 }
 
-Planes_t read_all_planes() {
-    char table_path[PATH_MAX]; 
-    get_plane_table_path(table_path);
-
-    FILE* f = fopen(table_path, "rb");
-    if(!f) return NULL; 
-
-    Planes_t planes = create_list();
-    if(is_null_ptr(planes)) return NULL;
-
-    while(true) {
-        Plane_t* pl = (Plane_t*) malloc(sizeof(Plane_t));
-        if(is_null_ptr(pl)) return NULL;
-
-        fread(pl, sizeof(Plane_t), 1, f);
-        
-        if(feof(f)) {
-            dealloc_pl(pl);
-            break;
-        }
-
-        if(insert_element(planes, pl) == ERR)
-            log_error("error while reading planes");
-    }
-
-    fclose(f);
-    return planes;
-}
-
 
 int delete_plane(bool(find_func)(void*, void*), void* cmp) {
     if(!find_func) return ERR;
+    log_info("delete_plane(): init.");
 
-    char table_path[PATH_MAX];
-    get_plane_table_path(table_path);
+    Planes_t planes = read_plane(find_func, cmp,true);
+    if(is_null_ptr(planes)) return ERR;
 
-    FILE* f;
-    int pos = 0;
-    bool found_match = false;
+    recreate_database_table(TABLE_NAME_PLANE);
+    if(error_in(for_each_element(planes, write_plane))) return ERR;
 
-    while(true) {
-
-        Plane_t* pl = (Plane_t*) malloc(sizeof(Plane_t));
-        if(!pl) return ERR;
-
-        f = fopen(table_path, "rb");
-        fseek(f, pos, SEEK_SET);
-
-        if(!f) return ERR;
-
-        fread(pl, sizeof(Plane_t), 1, f);
-        if(feof(f)) {
-            dealloc_pl(pl);
-            break;
-        }
-
-        if(find_func(pl, cmp)) {
-            found_match = true;
-            fseek(f, -((int)sizeof(Plane_t)), SEEK_CUR);
-            pos = ftell(f);
-            fclose(f);
-            pl->deleted = true;
-            f = fopen(table_path, "wb");
-            fseek(f, pos, SEEK_CUR);
-            fwrite(pl, sizeof(Plane_t), 1, f);
-            pos = ftell(f);
-            fclose(f);
-        }
-    }
-
-    return found_match ? OK : ERR;
+    return OK;
 }
 
 int update_plane(Plane_t* new_pl, bool(*find_func)(void*, void*), void* cmp) {
-    if(!new_pl ) return ERR;
+    if(!new_pl) return ERR;
     char table_path[PATH_MAX];
     get_plane_table_path(table_path);
 
-    FILE* f;
-    int pos = 0;
-    bool found_match = false;
-    while(true) {
+    Planes_t planes = read_plane(all_registers, NULL, false);
+    if(is_null_ptr(planes)) return ERR;
 
-        Plane_t* pl = (Plane_t*) malloc(sizeof(Plane_t));
-        if(!pl) return ERR;
+    Planes_t updated_planes = create_list();
+    if(is_null_ptr(updated_planes)) return ERR;
 
-        f = fopen(table_path, "rb");
-        fseek(f, pos, SEEK_SET);
+    element_t* aux = planes->head;
+    Plane_t* plane_aux;
 
-        if(!f) return ERR;
-
-        fread(pl, sizeof(Plane_t), 1, f);
-        if(feof(f)) {
-            dealloc_pl(pl);
-            break;
-        }
-
-        if(find_func(pl, cmp)) {
-            found_match = true;
-            fseek(f, -((int)sizeof(Plane_t)), SEEK_CUR);
-            pos = ftell(f);
-            fclose(f);
-            pl->deleted = true;
-            f = fopen(table_path, "wb");
-            fseek(f, pos, SEEK_CUR);
-            fwrite(new_pl, sizeof(Plane_t), 1, f);
-            pos = ftell(f);
-            fclose(f);
-        }
+    while(aux) {
+        if(find_func(aux->data, cmp)) {
+            plane_aux = ((Plane_t*) aux->data);
+            new_pl->id = plane_aux->id;
+            insert_element(updated_planes, new_pl);
+        } 
+        else 
+            insert_element(updated_planes, aux->data);
+        
+        aux = aux->next;
     }
 
-    return found_match ? OK : ERR;
+    recreate_database_table(TABLE_NAME_PLANE);
+    for_each_element(updated_planes, write_plane);
+
+    return OK;
 }
 
 
