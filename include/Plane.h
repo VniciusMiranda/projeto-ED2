@@ -30,7 +30,6 @@ typedef enum plane_model {
 int get_name_model(plane_model_t model, char* dest);
 
 typedef struct plane {
-    bool deleted;
     unsigned long int id;
     char model[PLANE_MODEL_MAX];
     AirlineCompany_t airlineCompany;

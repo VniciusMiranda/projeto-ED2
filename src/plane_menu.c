@@ -21,7 +21,10 @@ int plane_fields_options_size = ARRAY_SIZE(plane_fields_options);
 Plane_t* get_plane_from_user(FILE* f) {
     char model[PLANE_MODEL_MAX];
     int capacidade;
-    AirlineCompany_t AirlineCompany;
+    AirlineCompany_t airlineCompany;
+    strcpy(airlineCompany.country, "BR");
+    strcpy(airlineCompany.name, "Gol");
+
     clear_input_buffer();
 
     set_color(f, WHITE, true);
@@ -35,7 +38,7 @@ Plane_t* get_plane_from_user(FILE* f) {
 
     reset_color(f);
 
-    Plane_t* plane = create_plane(capacidade, AirlineCompany, model);
+    Plane_t* plane = create_plane(capacidade, airlineCompany, model);
 
     if(!plane) return NULL;
 
@@ -175,6 +178,7 @@ int _delete_plane(FILE* f) {
     if(option == 'n' || option == 'N') 
     {
         print_warning(f, "todos os registros serao apagados!");
+        set_color(f,WHITE, true);
         fprintf(f, "deseja continuar?(y/n)\n");
         fprintf(f, ">");
         scanf("%c", &option);

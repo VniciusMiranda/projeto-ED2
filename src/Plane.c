@@ -50,7 +50,6 @@ Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, char* mode
     strcpy(new_plane->model, model);
     new_plane->capacity = capacity;
     new_plane->id = ++LAST_VALID_ID_PLANE;
-    new_plane->deleted = false;
     new_plane->airlineCompany = airline_company; 
     return new_plane;
 }
@@ -69,7 +68,6 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
 
     set_color(f, color, is_bold);
     print_line(f, 0, 0);
-
 
     fprintf(f, "id: %ld\n", pl->id);
     fprintf(f, "modelo: %s\n", pl->model);
@@ -160,10 +158,6 @@ Planes_t read_plane(bool(find_func)(void*, void*), void* cmp, bool not) {
             break;
         }
 
-        if(pl->deleted) {
-            dealloc_pl(pl);
-            continue;
-        }
         bool found_match = not ? !find_func(pl, cmp) : find_func(pl, cmp);
         if(found_match)
             if(insert_element(planes, pl) == ERR)
