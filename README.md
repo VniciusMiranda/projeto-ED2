@@ -55,10 +55,9 @@ python3 setup.py
 
 Caso não tenha python na sua maquina, prosiga com as seguintes instruções:
 
-
 instalar as dependências:
 ```
-sudo apt install curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make 
+sudo apt install curl libcurl4-openssl-dev libncurses5-dev libncursesw5-dev make libjson-c-dev 
 ```
 
 Crie os diretórios "executable" e "obj":
