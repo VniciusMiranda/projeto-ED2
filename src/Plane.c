@@ -41,13 +41,13 @@ int get_name_model(plane_model_t model, char* dest) {
 }
 
 
-Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_model_t model){
+Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, char* model){
     if( capacity < 1) return NULL;
 
     Plane_t* new_plane = (Plane_t*) malloc(sizeof(Plane_t));
     if(is_null_ptr(new_plane)) return NULL;
 
-    new_plane->model = model;
+    strcpy(new_plane->model, model);
     new_plane->capacity = capacity;
     new_plane->id = ++LAST_VALID_ID_PLANE;
     new_plane->deleted = false;
@@ -70,11 +70,9 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
     set_color(f, color, is_bold);
     print_line(f, 0, 0);
 
-    char model[TEXT_MAX];
-    get_name_model(pl->model, model);
 
     fprintf(f, "id: %ld\n", pl->id);
-    fprintf(f, "modelo: %s\n", model);
+    fprintf(f, "modelo: %s\n", pl->model);
     fprintf(f, "companhia aerea: %s\n", pl->airlineCompany.name);
     fprintf(f, "capacidade: %d\n", pl->capacity);
 
@@ -83,8 +81,8 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
 
 bool find_plane_by_model(void* d, void* cmp) {
     Plane_t* pl = (Plane_t*) d;
-    plane_model_t* pm = (plane_model_t*) cmp;
-    return pl->model == *pm; 
+    char* model = (char*) cmp;
+    return equals(pl->model, model);
 }
 
 bool find_plane_by_company(void* d, void* cmp){
@@ -112,9 +110,7 @@ int get_plane_id(void* d){
 
 int get_plane_model(void* d){ 
     Plane_t* pl = (Plane_t*) d;
-    char str[32];
-    get_name_model(pl->model, str);
-    return get_first_letter_upper_case_int_repr(str);
+    return get_first_letter_upper_case_int_repr(pl->model);
 }
 
 int get_plane_capacity(void* d){

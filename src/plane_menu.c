@@ -35,7 +35,7 @@ Plane_t* get_plane_from_user(FILE* f) {
 
     reset_color(f);
 
-    Plane_t* plane = create_plane(capacidade, AirlineCompany, (plane_model_t)model);
+    Plane_t* plane = create_plane(capacidade, AirlineCompany, model);
 
     if(!plane) return NULL;
 
