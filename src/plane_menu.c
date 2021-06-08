@@ -198,6 +198,7 @@ int _delete_plane(FILE* f) {
     if(option == 'n' || option == 'N') 
     {
         print_warning(f, "todos os registros serao apagados!");
+        set_color(f,WHITE, true);
         fprintf(f, "deseja continuar?(y/n)\n");
         fprintf(f, ">");
         scanf("%c", &option);

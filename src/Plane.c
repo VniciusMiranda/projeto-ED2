@@ -164,10 +164,6 @@ Planes_t read_plane(bool(find_func)(void*, void*), void* cmp, bool not) {
             break;
         }
 
-        if(pl->deleted) {
-            dealloc_pl(pl);
-            continue;
-        }
         bool found_match = not ? !find_func(pl, cmp) : find_func(pl, cmp);
         if(found_match)
             if(insert_element(planes, pl) == ERR)
