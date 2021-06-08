@@ -19,23 +19,46 @@ char* plane_fields_options[] = {
 int plane_fields_options_size = ARRAY_SIZE(plane_fields_options);
 
 Plane_t* get_plane_from_user(FILE* f) {
-    char model[PLANE_MODEL_MAX];
     int capacidade;
-    AirlineCompany_t AirlineCompany;
+    AirlineCompany_t *airlineCompany;
     clear_input_buffer();
 
     set_color(f, WHITE, true);
 
     print_line(f, 80, '-');
-    fprintf(f, "modelo do aviao: ");
-    scanf ("%[^\n]%*c", model);
+    int selectedOpt;
+    while(true){
+        fprintf(f, "escolha um modelo de aviao: ");
+        for(int i = 1; i <= 10; i++){
+            char buffer[TEXT_MAX];
+            get_name_model(i, buffer);
+            fprintf(f, "\n%d - %s", i, buffer);
+        }
+        fprintf(f, "\n\nescolha: ");
+        scanf ("%d", &selectedOpt);
+        if(selectedOpt < 1 || selectedOpt > 10){
+            print_error(f, "Nao existe essa opcao!");
+        }else {
+            break;
+        }
+    }
 
     fprintf(f, "capacidade do avião: ");
     scanf ("%d", &capacidade);
+    clear_input_buffer();
+    char companyName[TEXT_MAX];
+    char companyCountry[TEXT_MAX];
+    fprintf(f, "nome da companhia aerea: ");
+    scanf ("%[^\n]%*c", companyName);
+    fprintf(f, "pais da companhia aerea: ");
+    scanf ("%[^\n]%*c", companyCountry);
+
+    airlineCompany = create_company(companyName, companyCountry);
+
 
     reset_color(f);
 
-    Plane_t* plane = create_plane(capacidade, AirlineCompany, (plane_model_t)model);
+    Plane_t* plane = create_plane(capacidade, *airlineCompany, selectedOpt);
 
     if(!plane) return NULL;
 

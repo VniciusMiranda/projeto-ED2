@@ -3,34 +3,34 @@
 int get_name_model(plane_model_t model, char* dest) {
 
     switch(model) {
-        case Airbus_A320:
+        case 1:
             strcpy(dest, "Airbus_A320");
             break;
-        case Boeing_737:
+        case 2:
            strcpy(dest, "Boeing_737");
             break;
-        case DC_9MD_80:
+        case 3:
             strcpy(dest, "DC_9MD_80");
             break;
-        case Boeing_777:
+        case 4:
             strcpy( dest, "Boeing_777");
             break;
-        case Bombardier_CRJ_Series:
+        case 5:
             strcpy(dest,"Bombardier_CRJ_Series");
             break;
-        case Embraer_E_Jets:
+        case 6:
             strcpy(dest,"Embraer_E_Jets");
             break;
-        case Boeing_727:
+        case 7:
             strcpy(dest,"Boeing_727");
 
-        case Airbus_A330:
+        case 8:
             strcpy(dest, "Airbus_A330");
             break;
-        case Boeing_747:
+        case 9:
             strcpy(dest,"Boeing_747" );
             break;
-        case Boeing_787:
+        case 10:
             strcpy(dest,"Boeing_747");
             break;
         default:
@@ -41,17 +41,17 @@ int get_name_model(plane_model_t model, char* dest) {
 }
 
 
-Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_model_t model){
+Plane_t* create_plane(int capacity, AirlineCompany_t airlineCompany, int model){
     if( capacity < 1) return NULL;
 
     Plane_t* new_plane = (Plane_t*) malloc(sizeof(Plane_t));
     if(is_null_ptr(new_plane)) return NULL;
 
-    new_plane->model = model;
+    get_name_model((plane_model_t)model, new_plane->model);
     new_plane->capacity = capacity;
     new_plane->id = ++LAST_VALID_ID_PLANE;
     new_plane->deleted = false;
-    new_plane->airlineCompany = airline_company; 
+    new_plane->airlineCompany = airlineCompany; 
     return new_plane;
 }
 
@@ -71,10 +71,10 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
     print_line(f, 0, 0);
 
     char model[TEXT_MAX];
-    get_name_model(pl->model, model);
+    get_name_model((plane_model_t)pl->model, model);
 
     fprintf(f, "id: %ld\n", pl->id);
-    fprintf(f, "modelo: %s\n", model);
+    fprintf(f, "modelo: %s\n", pl->model);
     fprintf(f, "companhia aerea: %s\n", pl->airlineCompany.name);
     fprintf(f, "capacidade: %d\n", pl->capacity);
 
@@ -84,7 +84,7 @@ void print_plane(FILE* f, void* d, color_t color, bool is_bold) {
 bool find_plane_by_model(void* d, void* cmp) {
     Plane_t* pl = (Plane_t*) d;
     plane_model_t* pm = (plane_model_t*) cmp;
-    return pl->model == *pm; 
+    return (plane_model_t)pl->model == *pm; 
 }
 
 bool find_plane_by_company(void* d, void* cmp){
@@ -113,7 +113,7 @@ int get_plane_id(void* d){
 int get_plane_model(void* d){ 
     Plane_t* pl = (Plane_t*) d;
     char str[32];
-    get_name_model(pl->model, str);
+    get_name_model((plane_model_t)pl->model, str);
     return get_first_letter_upper_case_int_repr(str);
 }
 

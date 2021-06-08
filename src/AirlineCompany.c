@@ -23,7 +23,6 @@ void print_company(FILE* f, void* d, color_t color, bool is_bold) {
 
     set_color(f, color, is_bold);
     print_line(f, 0, 0);
-    fprintf(f, "id: %ld\n", comp->id);
     fprintf(f, "nome: %s\n", comp->name);
     fprintf(f, "pais: %s\n", comp->country);
 

@@ -32,14 +32,14 @@ int get_name_model(plane_model_t model, char* dest);
 typedef struct plane {
     bool deleted;
     unsigned long int id;
-    plane_model_t model;
+    char model[TEXT_MAX];
     AirlineCompany_t airlineCompany;
     int capacity;
 } Plane_t;
 
 typedef linked_list_t* Planes_t;
 
-Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, plane_model_t model);
+Plane_t* create_plane(int capacity, AirlineCompany_t airline_company, int model);
 
 int dealloc_pl(void* pl_ptr);
 
@@ -84,7 +84,5 @@ int init_planes_table();
 long int resolve_plane_id();
 
 int get_plane_table_path(char* dest);
-
-bool all_planes(void* d, void* cmp);
 
 #endif 

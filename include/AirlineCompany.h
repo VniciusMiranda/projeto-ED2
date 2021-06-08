@@ -8,7 +8,6 @@
 #include "Location.h"
 
 typedef struct AirlineCompany {
-    unsigned long int id;
     char name[COMPANY_NAME_MAX];
     char country[COUNTRY_NAME_MAX];
 } AirlineCompany_t;
